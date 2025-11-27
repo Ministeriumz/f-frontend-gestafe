@@ -1,9 +1,9 @@
 import Image from 'next/image'
-import React, { FormEvent } from 'react'
+import React, { FormEvent, useState } from 'react'
 import Input from '@/components/Input'
 import Button from '@/components/Button'
-import Add from '@mui/icons-material/Add';
 import { useRouter } from 'next/navigation';
+import LoadingIndicator from '../LoadingIndicator';
 
 type TiposPage = {
     page: boolean,
@@ -12,10 +12,16 @@ type TiposPage = {
 
 export default function Cadastro({ page, setPage }: TiposPage) {
     const router = useRouter();
+
+    const [loading, setLoading] = useState(false);
+    
     const cadastrar = (e: FormEvent) => {
+        setLoading(true);
         e.preventDefault();
-        router.push('dashboard');
+        router.push('igreja/dashboard');
     }
+
+
     return (
         <div className='relative gap-3 flex w-full h-screen'>
 
@@ -35,11 +41,9 @@ export default function Cadastro({ page, setPage }: TiposPage) {
                     <form className='gap-2 flex flex-col w-full' action='POST' onSubmit={(e) => cadastrar(e)}>
                         <Input placeholder='Telefone' type='number' />
                         <Input placeholder='E-mail' type='email' />
-                        <Input placeholder='CEP' type='number' />
-                        <Input placeholder='CNPJ' />
 
-                        <Button icon={<Add />}>
-                            Cadastrar-se
+                        <Button>
+                            {loading ? <LoadingIndicator /> : "Cadastrar-se"}
                         </Button>
                     </form>
 
@@ -54,7 +58,7 @@ export default function Cadastro({ page, setPage }: TiposPage) {
                 <p className='text-sm font-light opacity-70'>Feito pela Ministerium</p>
             </div>
 
-            <div className='bg-linear-240 from-[#363636] to-[#1F1F1F] col-span-1 flex-col max-w-[70%] flex-1 items-start justify-center text-textDark p-20 hidden xl:flex '>
+            <div className='bg-gradient rounded-l-2xl col-span-1 flex-col max-w-[70%] flex-1 items-start justify-center text-textDark p-20 hidden xl:flex '>
                 <div className='flex flex-col text-textDark gap-2 ml-10'>
                     <h1 className='text-6xl font-semibold'>A fé move as pessoas</h1>
                     <p className='text-2xl font-extralight'>E estamos aqui para ajudar você à se mover!</p>
