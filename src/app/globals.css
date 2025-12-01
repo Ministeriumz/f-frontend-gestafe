@@ -58,3 +58,14 @@ body {
 .bg-gradient {
   @apply bg-linear-240 from-[#363636] to-[#1F1F1F]
 }
+
+.pizza {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: conic-gradient(
+    #ff595e 0% 40%,
+    #1982c4 40% 65%,
+    #6a4c93 65% 100%
+  );
+}

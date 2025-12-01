@@ -23,7 +23,7 @@ export default function layout({ children }: LayoutTypes) {
             </div>
             <div className='p-4 overflow-auto w-full ml-[300px] text-neutral-600 flex flex-col gap-4'>
                 <div className='text-4xl capitalize font-semibold flex flex-col'>
-                    {activeItem}
+                    {activeItem !== "dashboard" && activeItem}
                     <div className='flex gap-2'>
                         {(path.split('/')).map((item, index) => {
                             if(path.split('/').length <= 3) return null;
