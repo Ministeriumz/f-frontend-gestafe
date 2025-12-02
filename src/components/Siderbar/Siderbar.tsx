@@ -3,7 +3,7 @@ import Image from 'next/image'
 import React from 'react';
 import Button from '../Button';
 import Dashboard from '@mui/icons-material/Dashboard';
-import {Item, ItemType} from './Item';
+import { Item, ItemType } from './Item';
 import { useRouter } from 'next/navigation';
 
 //Icones Elementos
@@ -15,7 +15,7 @@ import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import PsychologyIcon from '@mui/icons-material/Psychology';
 import MessageIcon from '@mui/icons-material/Message';
 import PersonIcon from '@mui/icons-material/Person';
-
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 
 const items = {
   escalas: {
@@ -47,6 +47,11 @@ const items = {
     link: '../igreja/mensagens',
     nome: 'Mensagens',
     icone: <MessageIcon />,
+  },
+  ministerios: {
+    link: '../igreja/ministerios',
+    nome: 'Ministerios',
+    icone: <AccountBalanceIcon />,
   },
 }
 

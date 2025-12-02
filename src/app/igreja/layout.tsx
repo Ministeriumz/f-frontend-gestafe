@@ -26,20 +26,22 @@ export default function layout({ children }: LayoutTypes) {
                     {activeItem !== "dashboard" && activeItem}
                     <div className='flex gap-2'>
                         {(path.split('/')).map((item, index) => {
-                            if(path.split('/').length <= 3) return null;
+                            if (path.split('/').length <= 3) return null;
                             if (index === 0 || index === 1) return null;
-                            if(index === 2) return(
+                            if (index === 2) return (
                                 <span key={index} className={cssClassItemMenu}>{item} </span>
                             )
                             return (
                                 <span key={index} className={cssClassItemMenu}>
-                                     {`> ${item}`}
+                                    {`> ${item}`}
                                 </span>
                             )
                         })}
                     </div>
                 </div>
-                {children}
+                <div className='mt-4'>
+                    {children}
+                </div>
             </div>
             <BtnExit />
         </div>
