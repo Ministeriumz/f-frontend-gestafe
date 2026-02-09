@@ -1,52 +1,70 @@
 'use client'
 import React, { useState } from 'react'
 import Carrossel from './carrossel'
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
-import DateRangeIcon from '@mui/icons-material/DateRange';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney'
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
+import DateRangeIcon from '@mui/icons-material/DateRange'
 
 export default function Page() {
-
   const [periodo, setPeriodo] = useState('30 dias')
 
   type CardProps = {
-  type: 'doacoes' | 'gastos'
-}
+    type: 'doacoes' | 'gastos'
+  }
 
   const Card = ({ type }: CardProps) => {
     const types = {
       doacoes: {
         title: 'Doações',
-        icon: <AttachMoneyIcon />,
-        css: 'bg-primary w-full min-h-[120px] rounded-lg shadow-md p-4 flex flex-col justify-between'
+        icon: <AttachMoneyIcon fontSize="small" className="text-primary" />,
       },
       gastos: {
         title: 'Gastos',
-        icon: '📊',
-        css: 'bg-[#AC8282] w-full min-h-[120px] rounded-lg shadow-md p-4 flex flex-col justify-between'
-      }
+        icon: <span className="text-primary text-sm">📊</span>,
+      },
     }
+
+    const current = types[type]
+
     return (
-      <div className={types[type]?.css || 'bg-primary w-full min-h-[120px] rounded-lg shadow-md p-4 flex flex-col justify-between'}>
-        <div className='flex justify-between items-start'>
-          <div>
-            <div className='flex items-center gap-2'>
-              <h3 className='text-white font-bold text-lg uppercase tracking-wide'>{types[type]?.title || "generico"}</h3>
-              <span className='text-xl text-white'>{types[type]?.icon}</span>
+      <div className="bg-white rounded-xl border border-neutral-200/60 shadow-sm hover:shadow-md transition-all p-5 flex flex-col gap-4">
+        {/* Header */}
+        <div className="flex justify-between items-start">
+          <div className="flex items-center gap-2 text-neutral-600">
+            <div className="w-8 h-8 rounded-md bg-neutral-100 flex items-center justify-center">
+              {current.icon}
             </div>
-            <p className='text-white/70 text-xs mt-1'>O quanto o pessoal apoia a igreja financeiramente</p>
+            <h3 className="font-medium text-sm uppercase tracking-wide">
+              {current.title}
+            </h3>
           </div>
-          <div className='flex items-center gap-1 text-white'>
-            <span className='text-sm font-semibold'>72%</span>
-            <span className=''><ArrowUpwardIcon /></span>
+
+          <div className="flex items-center gap-1 text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">
+            <ArrowUpwardIcon sx={{ fontSize: 14 }} />
+            72%
           </div>
         </div>
-        <div className='flex justify-between items-end mt-2'>
-          <span className='text-white font-bold text-2xl sm:text-3xl'>R$ 15.742,20</span>
+
+        {/* Valor */}
+        <div className="flex flex-col gap-1">
+          <span className="text-neutral-400 text-xs uppercase tracking-wide">
+            Total no período
+          </span>
+          <span className="text-neutral-800 font-semibold text-2xl">
+            R$ 15.742,20
+          </span>
+        </div>
+
+        {/* Footer */}
+        <div className="flex justify-between items-center pt-2 border-t border-neutral-100">
+          <span className="text-neutral-400 text-xs">
+            Atualizado agora
+          </span>
+
           <select
             value={periodo}
             onChange={(e) => setPeriodo(e.target.value)}
-            className='bg-white text-primary text-xs px-2 py-1 rounded-md cursor-pointer font-medium'
+            className="bg-neutral-50 border border-neutral-200 text-neutral-600 text-xs px-3 py-1 rounded-md cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/20"
           >
             <option value="7 dias">7 dias</option>
             <option value="30 dias">30 dias</option>
@@ -57,27 +75,41 @@ export default function Page() {
     )
   }
 
-  // Card de Próximos Eventos
   const CardEventos = () => {
     const eventos = [
-      { nome: 'Feira', cor: 'bg-yellow-200' },
-      { nome: 'Churrasco', cor: 'bg-yellow-100' },
+      { nome: 'Feira' },
+      { nome: 'Churrasco' },
     ]
 
     return (
-      <div className='bg-white w-full h-full rounded-lg shadow-md p-4 sm:p-6 flex flex-col'>
-        <div className='mb-4'>
-          <h3 className='text-neutral-700 font-bold text-xl uppercase tracking-wide'>Próximos Eventos</h3>
-          <p className='text-neutral-400 text-sm'>Aqui você pode ver os próximos eventos agendados</p>
+      <div className="bg-white rounded-xl border border-neutral-200/60 shadow-sm hover:shadow-md transition-all p-6 flex flex-col h-full">
+        <div className="mb-4">
+          <h3 className="text-neutral-700 font-medium text-sm uppercase tracking-wide">
+            Próximos eventos
+          </h3>
+          <p className="text-neutral-400 text-xs mt-1">
+            Eventos agendados no calendário
+          </p>
         </div>
-        <div className='flex flex-col gap-3 flex-1'>
+
+        <div className="flex flex-col gap-3 flex-1">
           {eventos.map((evento, index) => (
             <div
               key={index}
-              className={`${evento.cor} w-full p-4 rounded-lg flex items-center gap-3 hover:scale-[1.02] transition-transform cursor-pointer`}
+              className="group flex items-center justify-between p-3 rounded-lg border border-neutral-200 bg-neutral-50 hover:bg-white hover:shadow-sm transition-all cursor-pointer"
             >
-              <span className='text-2xl'>{<DateRangeIcon/>}</span>
-              <span className='text-neutral-700 font-semibold text-lg'>{evento.nome}</span>
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-md bg-white border border-neutral-200 flex items-center justify-center text-neutral-600">
+                  <DateRangeIcon fontSize="small" />
+                </div>
+                <span className="text-sm font-medium text-neutral-700">
+                  {evento.nome}
+                </span>
+              </div>
+
+              <span className="text-xs text-neutral-400 group-hover:text-neutral-600 transition">
+                Ver
+              </span>
             </div>
           ))}
         </div>
@@ -86,30 +118,28 @@ export default function Page() {
   }
 
   return (
-    <div className='flex flex-col min-h-screen p-2 sm:p-0'>
-      {/* Header de boas-vindas */}
-      <div className='flex gap-1 flex-col'>
-        <h1 className='text-2xl sm:text-3xl lg:text-4xl font-bold uppercase text-neutral-500'>
-          Seja muito <strong className='text-neutral-600'>bem-vindo(a)</strong>!
+    <div className="flex flex-col min-h-screen p-3 sm:p-0 gap-4 ">
+      {/* Header */}
+      <div className="flex flex-col gap-1">
+        <h1 className="text-2xl sm:text-3xl font-semibold text-neutral-700 leading-tight">
+          Seja bem-vindo
         </h1>
-        <p className='text-neutral-400 text-sm sm:text-base'>
-          Que o seu dia seja <strong className='uppercase text-neutral-500'>iluminado!</strong>
+        <p className="text-neutral-400 text-sm max-w-xl">
+          Aqui está o resumo da sua atividade recente.
         </p>
       </div>
 
       {/* Carrossel */}
       <Carrossel />
 
-      {/* Cards inferiores */}
-      <div className='w-full grid grid-cols-1 lg:grid-cols-7 mt-4 gap-4 flex-1 pb-4'>
-        {/* Coluna esquerda - Doações e Gastos */}
-        <div className='flex flex-col gap-4 lg:col-span-3 order-2 lg:order-1'>
+      {/* Grid */}
+      <div className="w-full grid grid-cols-1 lg:grid-cols-7 gap-4 flex-1 pb-4">
+        <div className="flex flex-col gap-4 lg:col-span-3 order-2 lg:order-1">
           <Card type="doacoes" />
           <Card type="gastos" />
         </div>
 
-        {/* Coluna direita - Próximos Eventos */}
-        <div className='lg:col-span-4 order-1 lg:order-2'>
+        <div className="lg:col-span-4 order-1 lg:order-2">
           <CardEventos />
         </div>
       </div>

@@ -39,7 +39,7 @@ export default function layout({ children }: LayoutTypes) {
                         })}
                     </div>
                 </div>
-                <div className='mt-4'>
+                <div className='mt-4 w-full h-full'>
                     {children}
                 </div>
             </div>
