@@ -1,6 +1,6 @@
 "use client"
-import Cadastro from '@/components/Cadastro'
-import Login from '@/components/Login'
+import Cadastro from '@/components/pages/Cadastro'
+import Login from '@/components/pages/Login'
 import React, { useState } from 'react'
 
 export default function page() {
