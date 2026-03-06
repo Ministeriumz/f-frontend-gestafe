@@ -1,5 +1,5 @@
 {
-  "name": "f-frontend-gestafe",
+  "name": "gestafe",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -15,7 +15,8 @@
     "next": "15.5.2",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "react-phone-input-2": "^2.15.1"
+    "react-phone-input-2": "^2.15.1",
+    "sonner": "^2.0.7"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

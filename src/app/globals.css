@@ -23,8 +23,8 @@ input:focus {
   --textLight: #828282;
   --textDark: #A6A6A6;
   --primary: #82ACAA;
+  --light-primary: #c0d5d4;
   --dark-primary: #337D7A;
-
 }
 
 @theme inline {
@@ -33,6 +33,7 @@ input:focus {
   --color-textLight: var(--textLight);
   --color-textDark: var(--textDark);
   --color-primary: #82ACAA;
+  --color-light-primary: #c0d5d4;
   --color-dark-primary: #337D7A;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -52,4 +53,19 @@ body {
   font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
+}
+
+.bg-gradient {
+  @apply bg-linear-240 from-[#363636] to-[#1F1F1F]
+}
+
+.pizza {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: conic-gradient(
+    #ff595e 0% 40%,
+    #1982c4 40% 65%,
+    #6a4c93 65% 100%
+  );
 }
