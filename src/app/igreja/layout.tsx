@@ -1,5 +1,5 @@
 "use client"
-import Navbar from '@/components/Siderbar/Siderbar';
+import Navbar from '@/components/siderbar/siderbar';
 import React from 'react'
 import "../globals.css";
 import BtnExit from '@/components/layouts/igreja/btnExit';

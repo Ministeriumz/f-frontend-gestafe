@@ -3,7 +3,7 @@ import Image from 'next/image'
 import React from 'react';
 import Button from '../button';
 import Dashboard from '@mui/icons-material/Dashboard';
-import { Item, ItemType } from './Item';
+import { Item, ItemType } from './item';
 import { useRouter } from 'next/navigation';
 
 //Icones Elementos

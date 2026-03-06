@@ -1,6 +1,6 @@
 'use client'
 import React, { useState, useMemo } from 'react'
-import Input from '../Input'
+import Input from '../input'
 import Modal from '../modal'
 import Form, { Camp } from '../Form/form'
 import Button from '../button'
