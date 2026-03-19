@@ -4,6 +4,7 @@ import Input from '../input'
 import Modal from '../modal'
 import Form, { Camp } from '../Form/form'
 import Button from '../Button'
+import ImprimirTable from './imprimirTable'
 
 export type Column<T> = {
   key: keyof T
@@ -274,7 +275,9 @@ export default function Table<T extends Record<string, unknown>>({
           </div>
           <ColumnSelector />
         </div>
-
+        <div className='w-full p-4'>
+          <ImprimirTable columns={columns} data={filteredData} fileName="relatorio_tabela" />
+        </div>
       </div>
 
       {selectedRows.size > 0 && (
@@ -282,6 +285,7 @@ export default function Table<T extends Record<string, unknown>>({
           Linhas selecionadas: {selectedRows.size}
         </div>
       )}
+
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <Form
