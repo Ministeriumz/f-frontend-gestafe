@@ -4,7 +4,7 @@ import Login from '@/components/pages/Login'
 import React, { useState } from 'react'
 
 export default function page() {
-  const [page, setPage] = useState<boolean>(false)
+  const [page, setPage] = useState<boolean>(true)
 
   return (
     <div className='flex flex-1 h-full'>

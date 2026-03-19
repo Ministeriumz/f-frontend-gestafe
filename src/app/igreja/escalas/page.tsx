@@ -1,188 +1,236 @@
 "use client";
 
-import React, { useState } from 'react';
-import Image from 'next/image';
+import React, { DragEvent, useEffect, useMemo, useState } from "react";
+import Table, { Column } from "@/components/Table/table";
+import Loading from "@/components/Loading/loading";
+import { ResponseCode, useCargos, useEscalas } from "@/hooks";
+import { toast } from "sonner";
 
-// Dados de exemplo para dias de culto
-const diasDeCulto = [
-  { dia: 12, mes: 'JANEIRO', selecionado: true },
-  { dia: 16, mes: 'JANEIRO', selecionado: false },
-  { dia: 17, mes: 'JANEIRO', selecionado: false },
-  { dia: 20, mes: 'JANEIRO', selecionado: false },
+type EscalaView = {
+  id: number;
+  data: string;
+  horaInicio: string;
+  horaFim: string;
+  cargoId: number;
+};
+
+type Turno = "manha" | "tarde" | "noite";
+
+const turnos: { key: Turno; label: string; horario: { inicio: string; fim: string } }[] = [
+  { key: "manha", label: "Manha", horario: { inicio: "08:00:00", fim: "12:00:00" } },
+  { key: "tarde", label: "Tarde", horario: { inicio: "13:00:00", fim: "17:00:00" } },
+  { key: "noite", label: "Noite", horario: { inicio: "18:00:00", fim: "22:00:00" } },
 ];
 
-// Dados de exemplo para escalas
-const escalasData = [
+const columns: Column<EscalaView>[] = [
+  { key: "id", label: "ID" },
   {
-    id: 1,
-    nome: 'RAFAELA RAMOS',
-    cargo: 'Auxiliar',
-    foto: '/dashboard/avatar1.jpg',
-    horarioInicio: '12:00',
-    horarioFim: '22:00',
+    key: "data",
+    label: "Data",
+    render: (value) => {
+      const text = String(value || "");
+      if (!text) return "-";
+      const parsed = new Date(text);
+      return isNaN(parsed.getTime()) ? text : parsed.toLocaleDateString("pt-BR");
+    },
   },
-  {
-    id: 2,
-    nome: 'JOÃO SILVA',
-    cargo: 'Líder de Louvor',
-    foto: '/dashboard/avatar2.jpg',
-    horarioInicio: '08:00',
-    horarioFim: '12:00',
-  },
-  {
-    id: 3,
-    nome: 'MARIA SANTOS',
-    cargo: 'Recepcionista',
-    foto: '/dashboard/avatar3.jpg',
-    horarioInicio: '10:00',
-    horarioFim: '14:00',
-  },
-  {
-    id: 4,
-    nome: 'PEDRO OLIVEIRA',
-    cargo: 'Auxiliar',
-    foto: '/dashboard/avatar4.jpg',
-    horarioInicio: '14:00',
-    horarioFim: '18:00',
-  },
+  { key: "horaInicio", label: "Hora Inicio" },
+  { key: "horaFim", label: "Hora Fim" },
+  { key: "cargoId", label: "Cargo ID" },
 ];
 
-// Componente para o badge de dia
-interface DiaBadgeProps {
-  dia: number;
-  mes: string;
-  selecionado: boolean;
-  onClick: () => void;
-}
-
-function DiaBadge({ dia, mes, selecionado, onClick }: DiaBadgeProps) {
-  return (
-    <button
-      onClick={onClick}
-      className={`flex flex-col items-center justify-center w-16 h-16 rounded-full border-2 transition-all ${
-        selecionado
-          ? 'bg-[#82ACAA] border-[#82ACAA] text-white'
-          : 'bg-white border-gray-300 text-gray-700 hover:border-[#82ACAA]'
-      }`}
-    >
-      <span className="text-xl font-bold leading-none">{dia}</span>
-      <span className="text-[8px] font-medium leading-none mt-1">{mes}</span>
-    </button>
-  );
-}
-
-// Componente para o botão de adicionar dia
-function AddDiaButton({ onClick }: { onClick: () => void }) {
-  return (
-    <button
-      onClick={onClick}
-      className="flex items-center justify-center w-10 h-10 text-4xl text-gray-400 hover:text-[#82ACAA] transition-colors"
-    >
-      +
-    </button>
-  );
-}
-
-// Componente para card de escala
-interface EscalaCardProps {
-  nome: string;
-  cargo: string;
-  foto: string;
-  horarioInicio: string;
-  horarioFim: string;
-}
-
-function EscalaCard({ nome, cargo, foto, horarioInicio, horarioFim }: EscalaCardProps) {
-  return (
-    <div className="flex items-center justify-between bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-3 hover:shadow-md transition-shadow">
-      <div className="flex items-center gap-4">
-        <div className="w-14 h-14 rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
-          <div className="w-full h-full bg-gradient-to-br from-[#82ACAA] to-[#4a6b4f] flex items-center justify-center text-white text-xl font-bold">
-            {nome.charAt(0)}
-          </div>
-        </div>
-        <div>
-          <h3 className="text-lg font-bold text-gray-800">{nome}</h3>
-          <p className="text-sm text-gray-500">{cargo}</p>
-        </div>
-      </div>
-      <div className="text-right">
-        <span className="text-2xl font-light text-gray-700">
-          {horarioInicio} - {horarioFim}
-        </span>
-      </div>
-    </div>
-  );
-}
-
-// Componente para botão de adicionar escala
-function AddEscalaButton({ onClick }: { onClick: () => void }) {
-  return (
-    <button
-      onClick={onClick}
-      className="flex items-center justify-center gap-2 bg-[#82ACAA] hover:bg-[#337D7A] text-white font-semibold py-3 px-8 rounded-lg transition-colors mt-4"
-    >
-      Adicionar Escala
-      <span className="text-xl">+</span>
-    </button>
-  );
+function getTurnoByHora(horaInicio: string): Turno {
+  const hour = Number((horaInicio || "00:00:00").split(":")[0]);
+  if (hour < 13) return "manha";
+  if (hour < 18) return "tarde";
+  return "noite";
 }
 
 export default function EscalasPage() {
-  const [dias, setDias] = useState(diasDeCulto);
-  const [diaSelecionado, setDiaSelecionado] = useState(0);
+  const { data, loading, error, getAll, create, update, remove } = useEscalas();
+  const { data: cargos, getAll: getAllCargos } = useCargos();
+  const [draggingId, setDraggingId] = useState<number | null>(null);
+  const [savingMove, setSavingMove] = useState(false);
 
-  const handleSelectDia = (index: number) => {
-    setDiaSelecionado(index);
-    setDias(dias.map((dia, i) => ({ ...dia, selecionado: i === index })));
+  useEffect(() => {
+    getAll();
+    getAllCargos();
+  }, [getAll, getAllCargos]);
+
+  const rows = useMemo<EscalaView[]>(
+    () =>
+      data.map((item) => ({
+        id: item.id || 0,
+        data: item.data,
+        horaInicio: item.horaInicio,
+        horaFim: item.horaFim,
+        cargoId: item.cargoId,
+      })),
+    [data]
+  );
+
+  const cargoById = useMemo(() => {
+    const map = new Map<number, string>();
+    cargos.forEach((cargo) => map.set(cargo.idCargo || 0, cargo.nome));
+    return map;
+  }, [cargos]);
+
+  const board = useMemo(() => {
+    return {
+      manha: rows.filter((item) => getTurnoByHora(item.horaInicio) === "manha"),
+      tarde: rows.filter((item) => getTurnoByHora(item.horaInicio) === "tarde"),
+      noite: rows.filter((item) => getTurnoByHora(item.horaInicio) === "noite"),
+    };
+  }, [rows]);
+
+  const onCreate = async (form: any) => {
+    const result = await create({
+      data: String(form.data || ""),
+      horaInicio: String(form.horaInicio || ""),
+      horaFim: String(form.horaFim || ""),
+      cargoId: Number(form.cargoId || 0),
+    });
+    if (result.code === ResponseCode.SUCCESS) {
+      toast.success("Escala criada");
+      getAll();
+      return;
+    }
+    toast.error(result.message);
   };
 
-  const handleAddDia = () => {
-    alert('Adicionar novo dia de culto');
+  const onEdit = async (row: EscalaView) => {
+    const result = await update({
+      id: Number(row.id),
+      data: String(row.data),
+      horaInicio: String(row.horaInicio),
+      horaFim: String(row.horaFim),
+      cargoId: Number(row.cargoId),
+    });
+    if (result.code === ResponseCode.SUCCESS) {
+      toast.success("Escala atualizada");
+      getAll();
+      return;
+    }
+    toast.error(result.message);
   };
 
-  const handleAddEscala = () => {
-    alert('Adicionar nova escala');
+  const onDelete = async (row: EscalaView) => {
+    const result = await remove(row.id);
+    if (result.code === ResponseCode.SUCCESS) {
+      toast.success("Escala removida");
+      return;
+    }
+    toast.error(result.message);
   };
+
+  const onDropCard = async (event: DragEvent<HTMLDivElement>, targetTurno: Turno) => {
+    event.preventDefault();
+    if (!draggingId) return;
+
+    const found = rows.find((item) => item.id === draggingId);
+    if (!found) return;
+
+    const target = turnos.find((item) => item.key === targetTurno);
+    if (!target) return;
+
+    if (getTurnoByHora(found.horaInicio) === targetTurno) return;
+
+    setSavingMove(true);
+    const result = await update({
+      ...found,
+      horaInicio: target.horario.inicio,
+      horaFim: target.horario.fim,
+    });
+    setSavingMove(false);
+
+    if (result.code === ResponseCode.SUCCESS) {
+      toast.success(`Escala movida para ${target.label}`);
+      getAll();
+      return;
+    }
+
+    toast.error(result.message || "Falha ao mover escala");
+  };
+
+  if (loading) return <Loading />;
+  if (error) return <div className="p-4 text-red-500">{error}</div>;
 
   return (
-    <div className="p-8 min-h-screen">
+    <div className="space-y-4">
+      <section className="glass-panel rounded-xl p-4">
+        <div className="flex items-center justify-between gap-3 mb-4">
+          <div>
+            <h2 className="text-lg md:text-xl font-semibold text-neutral-700">Board de Escalas</h2>
+            <p className="text-xs md:text-sm text-neutral-500">Arraste os cards entre turnos para atualizar horarios.</p>
+          </div>
+          {savingMove && <span className="text-xs text-amber-600">Salvando mudanca...</span>}
+        </div>
 
-      {/* Dias de Culto */}
-      <div className="mb-8">
-        <h2 className="text-sm font-semibold text-gray-600 mb-4">DIAS DE CULTO</h2>
-        <div className="flex items-center gap-3 flex-wrap">
-          {dias.map((dia, index) => (
-            <DiaBadge
-              key={index}
-              dia={dia.dia} 
-              mes={dia.mes}
-              selecionado={dia.selecionado}
-              onClick={() => handleSelectDia(index)}
-            />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          {turnos.map((turno) => (
+            <div
+              key={turno.key}
+              onDragOver={(event) => event.preventDefault()}
+              onDrop={(event) => onDropCard(event, turno.key)}
+              className="glass-soft rounded-lg border border-dashed border-white/60 p-3 min-h-44"
+            >
+              <h3 className="text-sm font-semibold text-neutral-700 mb-2">
+                {turno.label} ({turno.horario.inicio.slice(0, 5)} - {turno.horario.fim.slice(0, 5)})
+              </h3>
+
+              <div className="space-y-2">
+                {board[turno.key].map((item) => (
+                  <div
+                    key={item.id}
+                    draggable
+                    onDragStart={() => setDraggingId(item.id)}
+                    onDragEnd={() => setDraggingId(null)}
+                    className="glass-panel rounded-md p-2 cursor-grab active:cursor-grabbing"
+                  >
+                    <div className="text-xs text-neutral-400">Escala #{item.id}</div>
+                    <div className="text-sm font-semibold text-neutral-700">{cargoById.get(item.cargoId) || `Cargo ${item.cargoId}`}</div>
+                    <div className="text-xs text-neutral-500">{item.data}</div>
+                  </div>
+                ))}
+
+                {board[turno.key].length === 0 && (
+                  <div className="text-xs text-neutral-500 p-2 border border-white/55 rounded glass-soft">Sem escalas neste turno</div>
+                )}
+              </div>
+            </div>
           ))}
-          <AddDiaButton onClick={handleAddDia} />
         </div>
-      </div>
+      </section>
 
-      {/* Lista de Escalas */}
-      <div className="max-w-3xl">
-        {escalasData.map((escala) => (
-          <EscalaCard
-            key={escala.id}
-            nome={escala.nome}
-            cargo={escala.cargo}
-            foto={escala.foto}
-            horarioInicio={escala.horarioInicio}
-            horarioFim={escala.horarioFim}
-          />
-        ))}
-
-        {/* Botão Adicionar Escala */}
-        <div className="flex justify-center">
-          <AddEscalaButton onClick={handleAddEscala} />
-        </div>
-      </div>
+      <section className="glass-panel rounded-xl p-3">
+        <Table
+          columns={columns}
+          data={rows}
+          columnsSearch={["data", "cargoId"]}
+          actions={[
+            { name: "Editar", func: onEdit, color: "#82ACAA", type: "edit" },
+            { name: "Excluir", func: onDelete, color: "#AC8282", type: "delete" },
+            { name: "Cadastrar", func: onCreate, color: "#82ACAA", type: "create" },
+          ]}
+          onCreate={onCreate}
+          onEdit={onEdit}
+          onDelete={onDelete}
+          formFields={[
+            { key: "data", placeholder: "Data", type: "date" },
+            { key: "horaInicio", placeholder: "Hora Inicio", type: "time" },
+            { key: "horaFim", placeholder: "Hora Fim", type: "time" },
+            {
+              key: "cargoId",
+              placeholder: "Cargo",
+              type: "search-select",
+              options: cargos.map((cargo) => ({
+                label: cargo.nome,
+                value: cargo.idCargo || 0,
+              })),
+            },
+          ]}
+        />
+      </section>
     </div>
   );
 }

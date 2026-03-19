@@ -37,7 +37,7 @@ export default function Input({ placeholder, type = 'text', className = '', ...p
         />
 
       ) : (
-        <input placeholder={placeholder} type={type} className={`p-3 bg-white border-b max-h-[48px] border-[#C8C8C8] w-full max-w-[400px] placeholder:text-[#C8C8C8] shadow hover:shadow-xl/5 transition duration-300 focus:bg-neutral-100 text-black focus:shadow-xl/5 ${className}`} {...props}>
+        <input placeholder={placeholder} type={type} className={`glass-input p-3 rounded-lg max-h-[48px] w-full max-w-[400px] placeholder:text-[#7d8b8a] transition duration-300 focus:bg-white/70 text-black focus:shadow-xl/10 ${className}`} {...props}>
 
         </input>
       )}

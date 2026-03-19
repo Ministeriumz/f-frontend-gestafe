@@ -3,30 +3,30 @@
 import React, { useEffect, useMemo } from "react";
 import Table, { Column } from "@/components/Table/table";
 import Loading from "@/components/Loading/loading";
-import { ResponseCode, useCargos, CargoDTO } from "@/hooks";
+import { ResponseCode, useTiposUsuario } from "@/hooks";
 import { toast } from "sonner";
 
-type CargoView = {
-  idCargo: number;
+type TipoUsuarioView = {
+  id: number;
   nome: string;
 };
 
-const columns: Column<CargoView>[] = [
-  { key: "idCargo", label: "ID Cargo" },
+const columns: Column<TipoUsuarioView>[] = [
+  { key: "id", label: "ID" },
   { key: "nome", label: "Nome" },
 ];
 
-export default function CargosPage() {
-  const { data, loading, error, getAll, create, update, remove } = useCargos();
+export default function TiposUsuarioPage() {
+  const { data, loading, error, getAll, create, atualizarParcial, remove } = useTiposUsuario();
 
   useEffect(() => {
     getAll();
   }, [getAll]);
 
-  const rows = useMemo<CargoView[]>(
+  const rows = useMemo<TipoUsuarioView[]>(
     () =>
       data.map((item) => ({
-        idCargo: item.idCargo || 0,
+        id: item.id || 0,
         nome: item.nome,
       })),
     [data]
@@ -37,30 +37,27 @@ export default function CargosPage() {
       nome: String(form.nome || ""),
     });
     if (result.code === ResponseCode.SUCCESS) {
-      toast.success("Cargo criado com sucesso");
+      toast.success("Tipo de usuario criado");
       getAll();
       return;
     }
     toast.error(result.message);
   };
 
-  const onEdit = async (row: CargoView) => {
-    const result = await update({
-      idCargo: row.idCargo,
-      nome: row.nome,
-    });
+  const onEdit = async (row: TipoUsuarioView) => {
+    const result = await atualizarParcial(row.id, { nome: row.nome });
     if (result.code === ResponseCode.SUCCESS) {
-      toast.success("Cargo atualizado");
+      toast.success("Tipo de usuario atualizado");
       getAll();
       return;
     }
     toast.error(result.message);
   };
 
-  const onDelete = async (row: CargoView) => {
-    const result = await remove(row.idCargo);
+  const onDelete = async (row: TipoUsuarioView) => {
+    const result = await remove(row.id);
     if (result.code === ResponseCode.SUCCESS) {
-      toast.success("Cargo removido");
+      toast.success("Tipo de usuario removido");
       return;
     }
     toast.error(result.message);

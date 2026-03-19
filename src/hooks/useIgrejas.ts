@@ -1,33 +1,33 @@
-"use client"
-import { useCrud, ApiResponse } from './useCrud'
-import { useCallback } from 'react'
+"use client";
 
-// Tipagem do IgrejaDTO conforme documentação
+import { useCallback } from "react";
+import { ApiResponse, useCrud } from "./useCrud";
+
 export interface IgrejaDTO {
-  id?: number
-  nome: string
-  cnpj: string
-  estado: string
-  rua: string
-  cep: string
-  numero: string
+  id?: number;
+  nome: string;
+  cnpj: string;
+  estado: string;
+  rua: string;
+  cep: string;
+  numero: string;
 }
 
 export function useIgrejas() {
-  const crud = useCrud<IgrejaDTO>('Igreja')
+  const crud = useCrud<IgrejaDTO>({ endpoint: "Igreja" });
 
-  // PATCH específico para igreja
-  const atualizarParcial = useCallback(async (
-    id: number, 
-    dados: Partial<IgrejaDTO>
-  ): Promise<ApiResponse<IgrejaDTO>> => {
-    return crud.patch(id, dados, 'AtualizarIgrejaPorId')
-  }, [crud])
+  const atualizarParcial = useCallback(
+    async (id: number, dados: Partial<IgrejaDTO>): Promise<ApiResponse<IgrejaDTO>> => {
+      return crud.patch(id, dados);
+    },
+    [crud]
+  );
 
   return {
     ...crud,
     atualizarParcial,
-  }
+  };
 }
 
-export default useIgrejas
+export default useIgrejas;
+

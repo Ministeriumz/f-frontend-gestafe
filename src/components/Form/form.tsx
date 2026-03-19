@@ -1,13 +1,13 @@
 "use client"
 import React, { useState, useEffect } from 'react'
-import Button from '../button'
-import Input from '../Input'
-import Image from 'next/image';
+import Button from '../Button'
+import Input from '../input'
 
 export type Camp = {
     key: string;
     type?: string;
     placeholder: string;
+    options?: { label: string; value: string | number }[];
 }
 
 type FormProps = {
@@ -24,13 +24,14 @@ export default function Form({
     camps, object, type, onCancel, onConfirm, onEdit, onDelete }: FormProps) {
     const [formData, setFormData] = useState<any>(object || {});
     const [isLoading, setIsLoading] = useState(false);
+    const [optionFilters, setOptionFilters] = useState<Record<string, string>>({});
 
     // Atualiza formData quando object muda
     useEffect(() => {
         setFormData(object || {});
     }, [object, type]);
 
-    const tipagem = object ? Object.keys(object) : camps;
+    const tipagem = camps ?? (object ? Object.keys(object).map((key) => ({ key, placeholder: key })) : []);
 
     const contagem = tipagem?.length || 0;
     const tipoColunas = contagem <= 4 ? 'grid-cols-1' : contagem <= 8 ? 'grid-cols-2' : 'grid-cols-3';
@@ -75,9 +76,11 @@ export default function Form({
     // Filtra campos que não devem aparecer no formulário
     const fieldsToHide = ['id', 'idsecretaria', 'idfornecedor', 'idorcamento'];
 
-    const normalizedFields: Camp[] = object
-        ? Object.keys(object).map(key => ({ key, placeholder: key }))
-        : camps || [];
+    const normalizedFields: Camp[] = camps && camps.length > 0
+        ? camps
+        : object
+            ? Object.keys(object).map(key => ({ key, placeholder: key }))
+            : [];
 
     const visibleFields = normalizedFields.filter(
         (field) => !fieldsToHide.includes(field.key.toLowerCase())
@@ -98,14 +101,48 @@ export default function Form({
             <div className='flex'>
                 <div className={`grid ${tipoColunas} gap-2 mt-4`}>
                     {visibleFields?.map((field: Camp, index: number) => (
-                        <Input
-                            key={field.key + index}
-                            placeholder={field.placeholder}
-                            required={type !== 'view'}
-                            disabled={type === 'view' || type === 'delete'}
-                            value={formData[field.key] || ''}
-                            onChange={(e) => handleInputChange(field.key, e.target.value)}
-                        />
+                        <div key={field.key + index} className='flex flex-col gap-1'>
+                            {field.type === 'search-select' ? (
+                                <>
+                                    <Input
+                                        placeholder={`Buscar ${field.placeholder}`}
+                                        required={false}
+                                        disabled={type === 'view' || type === 'delete'}
+                                        value={optionFilters[field.key] || ''}
+                                        onChange={(e) => setOptionFilters((prev) => ({ ...prev, [field.key]: e.target.value }))}
+                                    />
+                                    <select
+                                        className='glass-input p-3 rounded-lg max-h-[48px] w-full max-w-[400px] text-black'
+                                        required={type !== 'view'}
+                                        disabled={type === 'view' || type === 'delete'}
+                                        value={formData[field.key] ?? ''}
+                                        onChange={(e) => handleInputChange(field.key, e.target.value)}
+                                    >
+                                        <option value="">Selecione {field.placeholder}</option>
+                                        {(field.options || [])
+                                            .filter(option => {
+                                                const term = (optionFilters[field.key] || '').toLowerCase().trim();
+                                                if (!term) return true;
+                                                return option.label.toLowerCase().includes(term);
+                                            })
+                                            .map(option => (
+                                                <option key={`${field.key}-${option.value}`} value={String(option.value)}>
+                                                    {option.label}
+                                                </option>
+                                            ))}
+                                    </select>
+                                </>
+                            ) : (
+                                <Input
+                                    placeholder={field.placeholder}
+                                    type={field.type || 'text'}
+                                    required={type !== 'view'}
+                                    disabled={type === 'view' || type === 'delete'}
+                                    value={formData[field.key] || ''}
+                                    onChange={(e) => handleInputChange(field.key, e.target.value)}
+                                />
+                            )}
+                        </div>
                     ))}
                 </div>
             </div>
@@ -116,6 +153,7 @@ export default function Form({
                 </Button>
                 {type !== 'view' ? (
                     <Button
+                        type="submit"
                         className='!w-full'
                     >
                         {isLoading ? 'Processando...' : 'Confirmar'}

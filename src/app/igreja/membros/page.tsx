@@ -1,80 +1,147 @@
-"use client"
-import React, { useEffect, useState } from 'react'
-import Table, { Column } from '@/components/Table/table'
-import { useUsuarios, ResponseCode } from '@/hooks'
-import Loading from '@/components/Loading/loading'
+"use client";
+
+import React, { useEffect, useMemo } from "react";
+import Table, { Column } from "@/components/Table/table";
+import Loading from "@/components/Loading/loading";
+import { ResponseCode, useIgrejas, useTiposUsuario, useUsuarios } from "@/hooks";
+import { toast } from "sonner";
 
 type MembroView = {
-  id: number
-  nome: string
-  sobrenome: string
-  telefone: string
-  email: string
-}
+  id: number;
+  nome: string;
+  sobrenome: string;
+  telefone: string;
+  email: string;
+  senha: string;
+  idIgreja: number;
+  idTipoUsuario: number;
+};
 
 const columns: Column<MembroView>[] = [
-  { key: 'id', label: 'ID' },
-  { key: 'nome', label: 'Nome' },
-  { key: 'sobrenome', label: 'Sobrenome' },
-  { key: 'telefone', label: 'Telefone' },
-  { key: 'email', label: 'Email' },
-]
+  { key: "id", label: "ID" },
+  { key: "nome", label: "Nome" },
+  { key: "sobrenome", label: "Sobrenome" },
+  { key: "telefone", label: "Telefone" },
+  { key: "email", label: "Email" },
+  { key: "idIgreja", label: "Igreja ID" },
+  { key: "idTipoUsuario", label: "Tipo Usuario ID" },
+];
 
 export default function MembrosPage() {
-  const { data, loading, error, getAll, remove } = useUsuarios()
-  const [membros, setMembros] = useState<MembroView[]>([])
+  const { data, loading, error, getAll, create, update, remove } = useUsuarios();
+  const { data: igrejas, getAll: getAllIgrejas } = useIgrejas();
+  const { data: tipos, getAll: getAllTipos } = useTiposUsuario();
 
   useEffect(() => {
-    getAll()
-  }, [getAll])
+    getAll();
+    getAllIgrejas();
+    getAllTipos();
+  }, [getAll, getAllIgrejas, getAllTipos]);
 
-  useEffect(() => {
-    // Transforma UsuarioDTO em MembroView para exibição
-    const membrosView: MembroView[] = data.map(usuario => ({
-      id: usuario.id || 0,
-      nome: usuario.nome,
-      sobrenome: usuario.sobrenome,
-      telefone: usuario.telefone,
-      email: usuario.email,
-    }))
-    setMembros(membrosView)
-  }, [data])
+  const rows = useMemo<MembroView[]>(
+    () =>
+      data.map((usuario) => ({
+        id: usuario.id || 0,
+        nome: usuario.nome,
+        sobrenome: usuario.sobrenome,
+        telefone: usuario.telefone,
+        email: usuario.email,
+        senha: usuario.senha || "",
+        idIgreja: usuario.idIgreja,
+        idTipoUsuario: usuario.idTipoUsuario,
+      })),
+    [data]
+  );
 
-  const editar = (row: MembroView) => {
-    alert(`Editando membro: ${row.nome} ${row.sobrenome}`)
-    // Aqui você pode abrir um modal de edição
-  }
+  const onCreate = async (form: any) => {
+    const result = await create({
+      nome: String(form.nome || ""),
+      sobrenome: String(form.sobrenome || ""),
+      telefone: String(form.telefone || ""),
+      email: String(form.email || ""),
+      senha: String(form.senha || ""),
+      idIgreja: Number(form.idIgreja || 1),
+      idTipoUsuario: Number(form.idTipoUsuario || 1),
+    });
 
-  const excluir = async (row: MembroView) => {
-    if (confirm(`Deseja realmente excluir o membro ${row.nome} ${row.sobrenome}?`)) {
-      const result = await remove(row.id)
-      if (result.code === ResponseCode.SUCCESS) {
-        alert('Membro excluído com sucesso!')
-      } else {
-        alert(`Erro ao excluir: ${result.message}`)
-      }
+    if (result.code === ResponseCode.SUCCESS) {
+      toast.success("Membro criado");
+      getAll();
+      return;
     }
-  }
+    toast.error(result.message);
+  };
 
-  const actions = [
-    { name: 'Editar', func: editar, color: '#82ACAA' },
-    { name: 'Excluir', func: excluir, color: '#AC8282' },
-  ]
+  const onEdit = async (row: MembroView) => {
+    const result = await update({
+      id: row.id,
+      nome: row.nome,
+      sobrenome: row.sobrenome,
+      telefone: row.telefone,
+      email: row.email,
+      senha: row.senha || "",
+      idIgreja: Number(row.idIgreja),
+      idTipoUsuario: Number(row.idTipoUsuario),
+    });
 
-  if (loading) {
-    return <Loading/>
-  }
+    if (result.code === ResponseCode.SUCCESS) {
+      toast.success("Membro atualizado");
+      getAll();
+      return;
+    }
+    toast.error(result.message);
+  };
 
-  if (error) {
-    return <div className="flex justify-center items-center p-8 text-red-500">Erro: {error}</div>
-  }
+  const onDelete = async (row: MembroView) => {
+    const result = await remove(row.id);
+    if (result.code === ResponseCode.SUCCESS) {
+      toast.success("Membro removido");
+      return;
+    }
+    toast.error(result.message);
+  };
+
+  if (loading) return <Loading />;
+  if (error) return <div className="flex justify-center items-center p-8 text-red-500">Erro: {error}</div>;
 
   return (
-    <Table 
-      columns={columns} 
-      data={membros} 
-      columnsSearch={['nome', 'sobrenome', 'email']} 
-      actions={actions} 
+    <Table
+      columns={columns}
+      data={rows}
+      columnsSearch={["nome", "sobrenome", "email"]}
+      actions={[
+        { name: "Editar", func: onEdit, color: "#82ACAA", type: "edit" },
+        { name: "Excluir", func: onDelete, color: "#AC8282", type: "delete" },
+        { name: "Cadastrar", func: onCreate, color: "#82ACAA", type: "create" },
+      ]}
+      onCreate={onCreate}
+      onEdit={onEdit}
+      onDelete={onDelete}
+      formFields={[
+        { key: "nome", placeholder: "Nome" },
+        { key: "sobrenome", placeholder: "Sobrenome" },
+        { key: "telefone", placeholder: "Telefone" },
+        { key: "email", placeholder: "Email" },
+        { key: "senha", placeholder: "Senha" },
+        {
+          key: "idIgreja",
+          placeholder: "Igreja",
+          type: "search-select",
+          options: igrejas.map((igreja) => ({
+            label: `${igreja.nome} (${igreja.cnpj})`,
+            value: igreja.id || 0,
+          })),
+        },
+        {
+          key: "idTipoUsuario",
+          placeholder: "Tipo de Usuario",
+          type: "search-select",
+          options: tipos.map((tipo) => ({
+            label: tipo.nome,
+            value: tipo.id || 0,
+          })),
+        },
+      ]}
     />
-  )
+  );
 }

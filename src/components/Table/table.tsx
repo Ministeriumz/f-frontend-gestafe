@@ -1,9 +1,9 @@
 'use client'
-import React, { useState, useMemo } from 'react'
-import Input from '../Input'
+import React, { useState, useMemo, useEffect } from 'react'
+import Input from '../input'
 import Modal from '../modal'
 import Form, { Camp } from '../Form/form'
-import Button from '../button'
+import Button from '../Button'
 
 export type Column<T> = {
   key: keyof T
@@ -28,12 +28,8 @@ type TableProps<T> = {
   onDelete?: (data: T) => void,
   tipo?: 'create' | 'edit' | 'delete'
   setTipo?: React.Dispatch<React.SetStateAction<'create' | 'edit' | 'delete'>>
+  formFields?: Camp[]
 }
-
-const camps: Camp[] = [
-  { key: 'nome', placeholder: 'Nome' },
-  { key: 'tamanho_max', placeholder: 'Tamanho Máximo' },
-]
 
 export default function Table<T extends Record<string, unknown>>({
   columns,
@@ -44,13 +40,19 @@ export default function Table<T extends Record<string, unknown>>({
   onEdit,
   onDelete,
   tipo = 'create',
-  setTipo
+  setTipo,
+  formFields
 }: TableProps<T>) {
 
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set())
   const [filters, setFilters] = useState<Record<string, string>>({})
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [currentRow, setCurrentRow] = useState<T | null>(null)
+  const [currentType, setCurrentType] = useState<'create' | 'edit' | 'delete'>(tipo)
+
+  useEffect(() => {
+    setCurrentType(tipo)
+  }, [tipo])
 
   // 🧠 NOVO: controle de colunas visíveis
   const [visibleColumns, setVisibleColumns] = useState<Set<keyof T>>(
@@ -134,7 +136,9 @@ export default function Table<T extends Record<string, unknown>>({
   }, [data, filters])
 
   const actionFunc = (action: Action, row: T) => {
-    setTipo?.(action.type!);
+    const selectedType = action.type || 'edit'
+    setCurrentType(selectedType)
+    setTipo?.(selectedType);
     setIsModalOpen(true);
     setCurrentRow(row);
   }
@@ -164,23 +168,30 @@ export default function Table<T extends Record<string, unknown>>({
     </div>
   )
 
+  const generatedFields: Camp[] = columns.map((col) => ({
+    key: String(col.key),
+    placeholder: String(col.label),
+  }))
+
   return (
     <>
       {/* FILTROS + CONTROLE DE COLUNAS */}
-      <div className='w-full mb-4 bg-white shadow rounded-lg p-4 space-y-3'>
+      <div className='glass-panel w-full mb-4 rounded-lg p-4 space-y-3'>
         <p className='text-xl font-semibold text-gray-700 uppercase'>Filtrar</p>
         <div className='flex flex-wrap gap-2'>
           {columnsSearch.map((colKey) => (
             <Input
               key={colKey}
               placeholder={`${colKey}`}
-              className='capitalize border border-gray-300 rounded-md px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400'
+              className='capitalize'
               onChange={(e) => handleFilterChange(colKey, e.target.value)}
             />
           ))}
-          <Button onClick={() => { setIsModalOpen(true); setTipo && setTipo('create') }}>
-            Cadastrar
-          </Button>
+          {onCreate && (
+            <Button onClick={() => { setCurrentType('create'); setCurrentRow(null); setIsModalOpen(true); setTipo && setTipo('create') }}>
+              Cadastrar
+            </Button>
+          )}
         </div>
 
         {Object.values(filters).some(f => f) && (
@@ -194,11 +205,11 @@ export default function Table<T extends Record<string, unknown>>({
       </div>
 
       {/* TABELA */}
-      <div className="w-full bg-white rounded-lg shadow overflow-hidden">
+      <div className="glass-panel w-full rounded-lg overflow-hidden">
         <div className="overflow-x-auto">
 
           <table className="w-full border-collapse">
-            <thead className="bg-gray-100 text-gray-700">
+            <thead className="bg-white/40 text-gray-700">
               <tr>
                 <th className="px-4 py-3 text-left text-sm font-medium uppercase"></th>
                 {visibleCols.map((col) => (
@@ -218,7 +229,7 @@ export default function Table<T extends Record<string, unknown>>({
                 </tr>
               ) : (
                 filteredData.map((row, rowIndex) => (
-                  <tr key={rowIndex} className="border-b border-gray-200 hover:bg-gray-50 transition">
+                  <tr key={rowIndex} className="border-b border-white/35 hover:bg-white/30 transition">
                     <td className='px-4 py-3'>
                       <input
                         type='checkbox'
@@ -239,7 +250,7 @@ export default function Table<T extends Record<string, unknown>>({
                         return (
                           <button
                             key={actionIndex}
-                            className="px-2 py-1 text-sm font-medium rounded border hover:text-white transition"
+                            className="px-2 py-1 text-sm font-medium rounded border hover:text-white transition backdrop-blur-sm"
                             style={{ backgroundColor: 'transparent', borderColor: action.color || '#ccc' }}
                             onMouseEnter={(e) => e.currentTarget.style.backgroundColor = action.color || '#ccc'}
                             onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
@@ -274,9 +285,9 @@ export default function Table<T extends Record<string, unknown>>({
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <Form
-          type={tipo}
+          type={currentType}
           object={currentRow as T}
-          camps={camps}
+          camps={formFields || generatedFields}
           onCancel={() => setIsModalOpen(false)}
           onConfirm={(data) => onCreate && onCreate(data)}
           onEdit={(data) => onEdit && onEdit(data)}

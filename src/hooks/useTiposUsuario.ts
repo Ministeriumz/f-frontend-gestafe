@@ -1,28 +1,28 @@
-"use client"
-import { useCrud, ApiResponse } from './useCrud'
-import { useCallback } from 'react'
+"use client";
 
-// Tipagem do TipoUsuarioDTO conforme documentação
+import { useCallback } from "react";
+import { ApiResponse, useCrud } from "./useCrud";
+
 export interface TipoUsuarioDTO {
-  id?: number
-  nome: string
+  id?: number;
+  nome: string;
 }
 
 export function useTiposUsuario() {
-  const crud = useCrud<TipoUsuarioDTO>('TipoUsuario')
+  const crud = useCrud<TipoUsuarioDTO>({ endpoint: "TipoUsuario" });
 
-  // PATCH específico para tipo de usuário
-  const atualizarParcial = useCallback(async (
-    id: number, 
-    dados: Partial<TipoUsuarioDTO>
-  ): Promise<ApiResponse<TipoUsuarioDTO>> => {
-    return crud.patch(id, dados, 'AtualizarTipoUsuarioPorId')
-  }, [crud])
+  const atualizarParcial = useCallback(
+    async (id: number, dados: Partial<TipoUsuarioDTO>): Promise<ApiResponse<TipoUsuarioDTO>> => {
+      return crud.patch(id, dados);
+    },
+    [crud]
+  );
 
   return {
     ...crud,
     atualizarParcial,
-  }
+  };
 }
 
-export default useTiposUsuario
+export default useTiposUsuario;
+

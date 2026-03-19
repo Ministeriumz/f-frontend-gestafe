@@ -1,24 +1,24 @@
-"use client"
-import { useCrud } from './useCrud'
+"use client";
 
-// Tipagem do EventosDTO conforme documentação
+import { useCrud } from "./useCrud";
+
 export interface EventoDTO {
-  id?: number
-  nome: string
-  tipo: string
-  resumo: string
-  data: string // formato: yyyy-MM-dd
-  hora_inicio: string // formato: HH:mm:ss
-  hora_fim: string // formato: HH:mm:ss
+  id?: number;
+  nome: string;
+  tipo: string;
+  resumo: string;
+  data: string;
+  hora_inicio: string;
+  hora_fim: string;
 }
 
 export function useEventos() {
-  const crud = useCrud<EventoDTO>('Eventos')
+  const crud = useCrud<EventoDTO>({ endpoint: "Eventos" });
 
   return {
     ...crud,
-    // Funções específicas podem ser adicionadas aqui
-  }
+  };
 }
 
-export default useEventos
+export default useEventos;
+
