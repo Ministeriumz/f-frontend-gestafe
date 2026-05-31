@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useEffect, useMemo } from "react";
-import Table, { Column } from "@/components/Table/table";
+import Table, { Column } from "@/components/table/table";
 import { useEventos, ResponseCode } from "@/hooks";
-import Loading from "@/components/Loading/loading";
+import Loading from "@/components/loading/loading";
 import { toast } from "sonner";
 
 type EventoView = {

@@ -2,8 +2,8 @@
 import React, { useState, useMemo, useEffect } from 'react'
 import Input from '../input'
 import Modal from '../modal'
-import Form, { Camp } from '../Form/form'
-import Button from '../Button'
+import Form, { Camp } from '../form/form'
+import Button from '../button'
 import ImprimirTable from './imprimirTable'
 
 export type Column<T> = {

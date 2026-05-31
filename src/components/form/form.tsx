@@ -1,6 +1,6 @@
 "use client"
 import React, { useState, useEffect } from 'react'
-import Button from '../Button'
+import Button from '../button'
 import Input from '../input'
 
 export type Camp = {

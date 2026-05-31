@@ -1,7 +1,7 @@
 "use client"
 import React from 'react'
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
-import Button from '../../Button';
+import Button from '../../button';
 import { clearSession } from '@/lib/auth';
 
 export default function BtnExit() {

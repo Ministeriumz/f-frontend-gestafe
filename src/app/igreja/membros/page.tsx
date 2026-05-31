@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useEffect, useMemo } from "react";
-import Table, { Column } from "@/components/Table/table";
-import Loading from "@/components/Loading/loading";
+import Table, { Column } from "@/components/table/table";
+import Loading from "@/components/loading/loading";
 import { ResponseCode, useIgrejas, useTiposUsuario, useUsuarios } from "@/hooks";
 import { toast } from "sonner";
 

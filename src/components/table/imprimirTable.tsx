@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState } from "react";
 import Modal from "../modal";
-import Button from "../Button";
+import Button from "../button";
 
 type PrintColumn<T> = {
   key: keyof T;

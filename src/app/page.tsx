@@ -1,10 +1,10 @@
 "use client"
-import Cadastro from '@/components/pages/Cadastro'
-import Login from '@/components/pages/Login'
+import Cadastro from '@/components/pages/cadastro'
+import Login from '@/components/pages/login'
 import React, { useState } from 'react'
 
 export default function page() {
-  const [page, setPage] = useState<boolean>(true)
+  const [page, setPage] = useState<boolean>(false)
 
   return (
     <div className='flex flex-1 h-full'>

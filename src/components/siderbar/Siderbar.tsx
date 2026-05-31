@@ -2,9 +2,9 @@
 
 import Image from "next/image";
 import React from "react";
-import Button from "../Button";
+import Button from "../button";
 import Dashboard from "@mui/icons-material/Dashboard";
-import { Item } from "./item";
+import { Item } from "./Item";
 import { useRouter } from "next/navigation";
 
 import PointOfSaleIcon from "@mui/icons-material/PointOfSale";

@@ -3,7 +3,7 @@
 import Image from "next/image";
 import React, { FormEvent, useState } from "react";
 import Input from "@/components/input";
-import Button from "@/components/Button";
+import Button from "@/components/button";
 import { useRouter } from "next/navigation";
 import LoadingIndicator from "../loadingIndicator";
 import { useAuth, ResponseCode } from "@/hooks";
