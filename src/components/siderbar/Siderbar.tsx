@@ -19,7 +19,7 @@ import ChurchIcon from "@mui/icons-material/Church";
 import SettingsIcon from "@mui/icons-material/Settings";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
-import LinkIcon from "@mui/icons-material/Link";
+import ThemeSwitcher from "@/components/theme/ThemeSwitcher";
 
 const items = [
   { link: "/igreja/membros", nome: "Membros", icone: <PeopleAltIcon fontSize="small" /> },
@@ -39,10 +39,10 @@ export default function Navbar() {
   const router = useRouter();
 
   return (
-    <nav className="fixed top-0 left-0 z-40 glass-panel border-b md:border-r border-white/50 w-full md:w-[250px] md:h-screen h-[76px]">
+    <nav className="fixed top-0 left-0 z-40 glass-panel w-full md:w-[250px] md:h-screen h-[76px]">
       <div className="hidden md:flex md:flex-col h-full p-4 gap-4">
         <div className="w-full h-fit flex items-center justify-center pt-2">
-          <Image src="/gestafebranco.png" width={80} height={80} alt="logo" className="opacity-30 invert" />
+          <Image src="/gestafebranco.png" width={80} height={80} alt="logo" className="opacity-40 invert" />
         </div>
 
         <Button className="!h-[42px] text-sm" onClick={() => router.push("/igreja/dashboard")} icon={<Dashboard fontSize="small" />}>
@@ -57,8 +57,10 @@ export default function Navbar() {
           </div>
         </div>
 
-        <div className="flex gap-2 text-neutral-600 font-semibold items-center glass-soft w-full p-2 rounded-lg">
-          <div className="rounded-full p-2 bg-primary text-white">
+        <ThemeSwitcher className="justify-between" />
+
+        <div className="flex gap-2 text-foreground/85 font-semibold items-center glass-soft w-full p-2 rounded-lg">
+          <div className="rounded-full p-2 bg-foreground/10 text-foreground">
             <PersonIcon fontSize="small" />
           </div>
           <h4 className="text-sm">Usuario</h4>
@@ -71,7 +73,7 @@ export default function Navbar() {
           <div className="flex items-center gap-1 min-w-max">
             <button
               onClick={() => router.push("/igreja/dashboard")}
-              className="text-xs px-2 py-1 rounded-md glass-soft text-neutral-700"
+              className="text-xs px-2 py-1 rounded-md glass-soft text-foreground/80"
             >
               Dashboard
             </button>

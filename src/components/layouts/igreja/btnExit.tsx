@@ -12,7 +12,7 @@ export default function BtnExit() {
     }
 
     return (
-        <Button className='fixed bottom-4 right-4 md:top-4 md:bottom-auto !w-[90px] !h-[42px] text-sm z-50' onClick={() => exit()} icon={<ExitToAppIcon fontSize="small" />} >
+        <Button className=' bottom-4 right-4 md:top-4 md:bottom-auto !w-[90px] !h-[42px] text-sm z-50' onClick={() => exit()} icon={<ExitToAppIcon fontSize="small" />} >
             Sair
         </Button>
     )

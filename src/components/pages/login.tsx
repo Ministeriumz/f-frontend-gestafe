@@ -82,7 +82,7 @@ export default function Login({ page, setPage }: TiposPage) {
             <Button type="submit">{loading ? <LoadingIndicator /> : "Acessar"}</Button>
             <button
               type="button"
-              className="h-[44px] rounded-lg border border-neutral-300 text-neutral-600 hover:bg-neutral-100 transition"
+              className="h-[44px] rounded-lg bg-foreground/8 text-foreground/75 hover:bg-foreground/12 transition"
               onClick={() => setPage(true)}
             >
               Ir para Cadastro

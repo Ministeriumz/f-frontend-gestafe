@@ -19,25 +19,27 @@ export default function Input({ placeholder, type = 'text', className = '', ...p
           placeholder='Telefone'
           inputStyle={{
             padding: '0.75rem',
-            border: 'none',
-            backgroundColor: 'white',
-            fontSize: 20,
-            borderBottom: '1px solid #C8C8C8',
+            border: '1px solid transparent',
+            backgroundColor: 'var(--surface-strong)',
+            color: 'var(--foreground)',
+            fontSize: 16,
             width: '100%',
-            maxHeight: '48px',
+            height: '46px',
             maxWidth: '400px',
-            boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
+            borderRadius: '0.5rem',
+            boxShadow: '0 3px 10px color-mix(in srgb, var(--foreground) 8%, transparent)',
           }}
           buttonStyle={{
-            backgroundColor: 'white',
+            backgroundColor: 'var(--surface-strong)',
             width: '50px',
-            border: 'none'
+            border: '1px solid transparent',
+            borderRadius: '0.5rem 0 0 0.5rem'
           }}
-          dropdownClass="bg-white"
+          dropdownClass="!bg-background !text-foreground"
         />
 
       ) : (
-        <input placeholder={placeholder} type={type} className={`glass-input p-3 rounded-lg max-h-[48px] w-full max-w-[400px] placeholder:text-[#7d8b8a] transition duration-300 focus:bg-white/70 text-black focus:shadow-xl/10 ${className}`} {...props}>
+        <input placeholder={placeholder} type={type} className={`glass-input p-3 rounded-lg h-[46px] w-full max-w-[400px] placeholder:text-foreground/50 transition duration-200 focus:bg-foreground/5 text-foreground focus:shadow-md ${className}`} {...props}>
 
         </input>
       )}

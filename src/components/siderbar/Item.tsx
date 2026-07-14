@@ -18,8 +18,8 @@ function Item({ index, item }: ItemTypes) {
   const isActive = path === item.link || path.startsWith(`${item.link}/`);
 
   const css = isActive
-    ? "text-sm md:text-[13px] flex gap-2 items-center cursor-pointer text-neutral-700 glass-soft px-3 py-2 rounded-md font-semibold whitespace-nowrap"
-    : "text-sm md:text-[13px] flex gap-2 items-center hover:bg-white/35 transition-all duration-200 cursor-pointer text-neutral-600 px-3 py-2 rounded-md whitespace-nowrap";
+    ? "text-sm md:text-[13px] flex gap-2 items-center cursor-pointer text-foreground bg-foreground/10 px-3 py-2 rounded-md font-semibold whitespace-nowrap"
+    : "text-sm md:text-[13px] flex gap-2 items-center hover:bg-foreground/8 transition-all duration-200 cursor-pointer text-foreground/70 px-3 py-2 rounded-md whitespace-nowrap";
 
   return (
     <Link href={item.link}>
