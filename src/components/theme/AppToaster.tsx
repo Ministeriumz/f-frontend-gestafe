@@ -1,8 +1,11 @@
 "use client";
+//* Libraries imports
 
+//* Libraries imports
 import React from "react";
 import { Toaster } from "sonner";
 
+//* Components imports
 import { useThemeMode } from "@/components/theme/ThemeProvider";
 
 export default function AppToaster() {

@@ -1,5 +1,7 @@
 "use client";
+//* Libraries imports
 
+//* Libraries imports
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 type ThemeMode = "light" | "dark" | "system";
@@ -28,11 +30,7 @@ function applyTheme(mode: ThemeMode): ResolvedTheme {
   const systemTheme = getSystemTheme();
   const resolved = mode === "system" ? systemTheme : mode;
 
-  if (mode === "system") {
-    root.removeAttribute("data-theme");
-  } else {
-    root.setAttribute("data-theme", mode);
-  }
+  root.setAttribute("data-theme", resolved);
 
   return resolved;
 }

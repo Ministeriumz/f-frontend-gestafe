@@ -1,13 +1,21 @@
 "use client";
+//* Libraries imports
 
+//* Libraries imports
 import { useEffect, useMemo, useState } from "react";
-import Loading from "@/components/loading/loading";
-import { ResponseCode, useEventos } from "@/hooks";
 import { toast } from "sonner";
+
+//* Components imports
+import Loading from "@/components/loading/loading";
 import { combineLocalDateTime, normalizeDate } from "./_components/calendar-config";
 import EventCalendar from "./_components/EventCalendar";
 import EventFiltersHeader from "./_components/EventFiltersHeader";
 import EventModal from "./_components/EventModal";
+
+//* Hooks imports
+import { ResponseCode, useEventos } from "@/hooks";
+
+//* Types imports
 import type { CalendarEvent, EventFilters, EventoView, EventForm } from "./_components/event-types";
 
 const EMPTY_FILTERS: EventFilters = { search: "", tipo: "", startDate: "", endDate: "" };
@@ -100,7 +108,7 @@ export default function EventosPage() {
     : Promise.resolve();
 
   if (loading && rows.length === 0) return <Loading />;
-  if (error && rows.length === 0) return <p className="p-8 text-red-500">Erro: {error}</p>;
+  if (error && rows.length === 0) return <p className="p-8 text-danger">Erro: {error}</p>;
 
   const filtersActive = Object.values(filters).some(Boolean);
 

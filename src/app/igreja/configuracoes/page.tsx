@@ -1,8 +1,15 @@
 "use client";
+//* Libraries imports
 
+//* Libraries imports
 import React, { FormEvent, useState } from "react";
-import { ResponseCode, useConfiguracoes } from "@/hooks";
 import { toast } from "sonner";
+
+//* Components imports
+import ConfirmDialog from "@/components/dialog";
+
+//* Hooks imports
+import { ResponseCode, useConfiguracoes } from "@/hooks";
 
 export default function ConfiguracoesPage() {
   const { getById, create, update, remove, loading } = useConfiguracoes();
@@ -10,6 +17,7 @@ export default function ConfiguracoesPage() {
   const [igrejaId, setIgrejaId] = useState("1");
   const [json, setJson] = useState("{\"tema\":\"claro\"}");
   const [resultado, setResultado] = useState<any>(null);
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
 
   const buscar = async () => {
     const result = await getById(Number(igrejaId));
@@ -59,12 +67,13 @@ export default function ConfiguracoesPage() {
   };
 
   return (
-    <form onSubmit={criar} className="bg-white rounded-xl p-5 border border-neutral-200 shadow-sm space-y-4">
+    <>
+    <form onSubmit={criar} className="bg-surface-solid rounded-xl p-5 border border-border-soft shadow-sm space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <div className="flex flex-col">
-          <label className="text-sm text-neutral-500">Igreja ID</label>
+          <label className="text-sm text-muted">Igreja ID</label>
           <input
-            className="bg-neutral-100 rounded px-3 py-2"
+            className="bg-surface-soft rounded px-3 py-2"
             value={igrejaId}
             onChange={(e) => setIgrejaId(e.target.value)}
             type="number"
@@ -74,9 +83,9 @@ export default function ConfiguracoesPage() {
       </div>
 
       <div className="flex flex-col">
-        <label className="text-sm text-neutral-500">Configuracao JSON</label>
+        <label className="text-sm text-muted">Configuracao JSON</label>
         <textarea
-          className="bg-neutral-100 rounded px-3 py-2 min-h-40"
+          className="bg-surface-soft rounded px-3 py-2 min-h-40"
           value={json}
           onChange={(e) => setJson(e.target.value)}
           required
@@ -84,26 +93,36 @@ export default function ConfiguracoesPage() {
       </div>
 
       <div className="flex flex-wrap gap-2">
-        <button type="submit" className="px-4 py-2 rounded bg-primary text-white">
+        <button type="submit" className="px-4 py-2 rounded bg-primary text-on-primary">
           Criar
         </button>
-        <button type="button" className="px-4 py-2 rounded bg-blue-600 text-white" onClick={atualizar} disabled={loading}>
+        <button type="button" className="px-4 py-2 rounded bg-info text-on-primary" onClick={atualizar} disabled={loading}>
           Atualizar
         </button>
-        <button type="button" className="px-4 py-2 rounded bg-neutral-700 text-white" onClick={buscar} disabled={loading}>
+        <button type="button" className="px-4 py-2 rounded bg-surface-inverse text-inverse" onClick={buscar} disabled={loading}>
           Buscar
         </button>
-        <button type="button" className="px-4 py-2 rounded bg-red-600 text-white" onClick={excluir} disabled={loading}>
+        <button type="button" className="px-4 py-2 rounded bg-danger text-on-primary" onClick={() => setConfirmDeleteOpen(true)} disabled={loading}>
           Excluir
         </button>
       </div>
 
       {resultado && (
-        <pre className="bg-neutral-900 text-neutral-100 text-sm rounded p-3 overflow-auto">
+        <pre className="bg-surface-inverse text-on-primary text-sm rounded p-3 overflow-auto">
           {JSON.stringify(resultado, null, 2)}
         </pre>
       )}
     </form>
+    <ConfirmDialog
+      isOpen={confirmDeleteOpen}
+      title="Excluir esta configuração?"
+      description={`A configuração vinculada à igreja ${igrejaId} será removida permanentemente.`}
+      confirmLabel="Excluir configuração"
+      loading={loading}
+      onCancel={() => setConfirmDeleteOpen(false)}
+      onConfirm={excluir}
+    />
+    </>
   );
 }
 

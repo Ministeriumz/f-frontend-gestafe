@@ -1,6 +1,10 @@
 "use client";
+//* Libraries imports
 
+//* Libraries imports
 import { useCallback } from "react";
+
+//* Utilities imports
 import { ApiResponse, useCrud } from "./useCrud";
 
 export interface UsuarioDTO {

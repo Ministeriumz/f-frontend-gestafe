@@ -1,10 +1,17 @@
 "use client";
+//* Libraries imports
 
+//* Libraries imports
 import { FormEvent, useEffect, useState } from "react";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
+
+//* Components imports
 import Input from "@/components/input";
 import Modal from "@/components/modal";
+import ConfirmDialog from "@/components/dialog";
+
+//* Utilities imports
 import { normalizeDate } from "./calendar-config";
 import { EMPTY_FORM, type EventoView, type EventForm } from "./event-types";
 
@@ -22,6 +29,7 @@ type EventModalProps = {
 export default function EventModal({ evento, initialDate, isOpen, saving, onClose, onCreate, onUpdate, onDelete }: EventModalProps) {
   const [form, setForm] = useState<EventForm>(EMPTY_FORM);
   const [validationError, setValidationError] = useState("");
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
 
   useEffect(() => {
     setForm(evento ? {
@@ -51,6 +59,7 @@ export default function EventModal({ evento, initialDate, isOpen, saving, onClos
   };
 
   return (
+    <>
     <Modal isOpen={isOpen} onClose={() => !saving && onClose()}>
       <form onSubmit={handleSubmit} className="event-form w-[min(680px,86vw)]">
         <div className="flex items-start justify-between gap-4 border-b border-foreground/10 pb-4">
@@ -94,11 +103,11 @@ export default function EventModal({ evento, initialDate, isOpen, saving, onClos
           </label>
         </div>
 
-        {validationError && <p className="mt-3 text-sm font-medium text-red-600">{validationError}</p>}
+        {validationError && <p className="mt-3 text-sm font-medium text-danger">{validationError}</p>}
 
         <div className="mt-6 flex flex-col-reverse justify-between gap-3 border-t border-foreground/10 pt-4 sm:flex-row">
           {evento ? (
-            <button type="button" onClick={onDelete} disabled={saving} className="event-danger-button">
+            <button type="button" onClick={() => setConfirmDeleteOpen(true)} disabled={saving} className="event-danger-button">
               <DeleteOutlineRoundedIcon fontSize="small" /> Excluir
             </button>
           ) : <span />}
@@ -111,5 +120,15 @@ export default function EventModal({ evento, initialDate, isOpen, saving, onClos
         </div>
       </form>
     </Modal>
+    <ConfirmDialog
+      isOpen={confirmDeleteOpen}
+      title="Excluir este evento?"
+      description={`O evento “${evento?.nome ?? "selecionado"}” será removido definitivamente do calendário.`}
+      confirmLabel="Excluir evento"
+      loading={saving}
+      onCancel={() => setConfirmDeleteOpen(false)}
+      onConfirm={onDelete}
+    />
+    </>
   );
 }

@@ -1,10 +1,16 @@
 "use client";
+//* Libraries imports
 
+//* Libraries imports
 import React, { useEffect, useMemo } from "react";
+import { toast } from "sonner";
+
+//* Components imports
 import Table, { Column } from "@/components/table/table";
 import Loading from "@/components/loading/loading";
+
+//* Hooks imports
 import { ResponseCode, StatusFinanceiro, useFinanceiro, useIgrejas } from "@/hooks";
-import { toast } from "sonner";
 
 type FinanceiroView = {
   id: number;
@@ -120,53 +126,53 @@ export default function FinanceiroPage() {
   };
 
   if (loading) return <Loading />;
-  if (error) return <div className="p-4 text-red-500">{error}</div>;
+  if (error) return <div className="p-4 text-danger">{error}</div>;
 
   return (
     <div className="space-y-4">
       <section className="glass-panel rounded-xl p-4">
         <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
           <div>
-            <h2 className="text-lg md:text-xl font-semibold text-neutral-700">Painel Financeiro</h2>
-            <p className="text-xs md:text-sm text-neutral-500">Visao de saldo, entradas, saidas e pendencias.</p>
+            <h2 className="text-lg md:text-xl font-semibold text-strong">Painel Financeiro</h2>
+            <p className="text-xs md:text-sm text-muted">Visao de saldo, entradas, saidas e pendencias.</p>
           </div>
-          <button className="px-3 py-2 rounded bg-neutral-100 text-neutral-600 text-xs md:text-sm hover:bg-neutral-200" onClick={() => getAll()}>
+          <button className="px-3 py-2 rounded bg-surface-soft text-muted text-xs md:text-sm hover:bg-surface-hover" onClick={() => getAll()}>
             Atualizar painel
           </button>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 mb-4">
-          <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-3">
-            <p className="text-xs text-emerald-700">Entradas</p>
-            <p className="text-xl font-semibold text-emerald-800">R$ {summary.entradas.toFixed(2)}</p>
+          <div className="rounded-lg border border-success-border bg-success-soft p-3">
+            <p className="text-xs text-success">Entradas</p>
+            <p className="text-xl font-semibold text-success">R$ {summary.entradas.toFixed(2)}</p>
           </div>
-          <div className="rounded-lg border border-rose-200 bg-rose-50 p-3">
-            <p className="text-xs text-rose-700">Saidas</p>
-            <p className="text-xl font-semibold text-rose-800">R$ {summary.saidas.toFixed(2)}</p>
+          <div className="rounded-lg border border-danger-border bg-danger-soft p-3">
+            <p className="text-xs text-danger">Saidas</p>
+            <p className="text-xl font-semibold text-danger">R$ {summary.saidas.toFixed(2)}</p>
           </div>
-          <div className="rounded-lg border border-blue-200 bg-blue-50 p-3">
-            <p className="text-xs text-blue-700">Saldo</p>
-            <p className="text-xl font-semibold text-blue-800">R$ {summary.saldo.toFixed(2)}</p>
+          <div className="rounded-lg border border-info-border bg-info-soft p-3">
+            <p className="text-xs text-info">Saldo</p>
+            <p className="text-xl font-semibold text-info">R$ {summary.saldo.toFixed(2)}</p>
           </div>
-          <div className="rounded-lg border border-amber-200 bg-amber-50 p-3">
-            <p className="text-xs text-amber-700">Pendentes</p>
-            <p className="text-xl font-semibold text-amber-800">{summary.pendentes}</p>
+          <div className="rounded-lg border border-warning-border bg-warning-soft p-3">
+            <p className="text-xs text-warning">Pendentes</p>
+            <p className="text-xl font-semibold text-warning">{summary.pendentes}</p>
           </div>
         </div>
 
         <div className="glass-soft rounded-lg p-3">
-          <p className="text-sm font-semibold text-neutral-700 mb-2">Evolucao por mes</p>
+          <p className="text-sm font-semibold text-strong mb-2">Evolucao por mes</p>
           <div className="grid grid-cols-3 md:grid-cols-6 gap-2 items-end min-h-32">
             {summary.chart.map((item) => (
               <div key={item.month} className="flex flex-col items-center gap-2">
                 <div
-                  className={`w-full rounded-t ${item.value >= 0 ? "bg-emerald-400" : "bg-rose-400"}`}
+                  className={`w-full rounded-t ${item.value >= 0 ? "bg-success" : "bg-danger"}`}
                   style={{ height: `${Math.max((Math.abs(item.value) / maxChartValue) * 110, 10)}px` }}
                 />
-                <span className="text-[10px] text-neutral-500">{item.month}</span>
+                <span className="text-[10px] text-muted">{item.month}</span>
               </div>
             ))}
-            {summary.chart.length === 0 && <div className="text-xs text-neutral-400 col-span-full">Sem dados para o grafico.</div>}
+            {summary.chart.length === 0 && <div className="text-xs text-subtle col-span-full">Sem dados para o grafico.</div>}
           </div>
         </div>
       </section>
@@ -177,9 +183,9 @@ export default function FinanceiroPage() {
           data={rows}
           columnsSearch={["acao", "status", "igrejaId"]}
           actions={[
-            { name: "Editar", func: onEdit, color: "#82ACAA", type: "edit" },
-            { name: "Excluir", func: onDelete, color: "#AC8282", type: "delete" },
-            { name: "Cadastrar", func: onCreate, color: "#82ACAA", type: "create" },
+            { name: "Editar", func: onEdit, type: "edit" },
+            { name: "Excluir", func: onDelete, type: "delete" },
+            { name: "Cadastrar", func: onCreate, type: "create" },
           ]}
           onCreate={onCreate}
           onEdit={onEdit}

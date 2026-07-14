@@ -1,5 +1,10 @@
 "use client"
+//* Libraries imports
+
+//* Libraries imports
 import React, { useState, useEffect } from 'react'
+
+//* Utilities imports
 import Button from '../button'
 import Input from '../input'
 
@@ -96,7 +101,7 @@ export default function Form({
         <form className='flex flex-col' onSubmit={handleSubmit}>
             <div className='flex flex-col'>
                 <h1 className='text-2xl font-semibold capitalize'>{nomes[type ? type : 'create']}</h1>
-                <p className='text-gray-400'>Vamos lá, preencha os campos abaixo:</p>
+                <p className='text-subtle'>Vamos lá, preencha os campos abaixo:</p>
             </div>
             <div className='flex'>
                 <div className={`grid ${tipoColunas} gap-2 mt-4`}>
@@ -112,7 +117,7 @@ export default function Form({
                                         onChange={(e) => setOptionFilters((prev) => ({ ...prev, [field.key]: e.target.value }))}
                                     />
                                     <select
-                                        className='glass-input p-3 rounded-lg max-h-[48px] w-full max-w-[400px] text-black'
+                                        className='glass-input p-3 rounded-lg max-h-[48px] w-full max-w-[400px] text-strong'
                                         required={type !== 'view'}
                                         disabled={type === 'view' || type === 'delete'}
                                         value={formData[field.key] ?? ''}

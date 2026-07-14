@@ -1,7 +1,13 @@
+
+//* Libraries imports
+
+//* Libraries imports
 import Link from "next/link";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import CalendarMonthRoundedIcon from "@mui/icons-material/CalendarMonthRounded";
 import EventAvailableRoundedIcon from "@mui/icons-material/EventAvailableRounded";
+
+//* Types imports
 import type { DashboardEvent } from "./dashboard-types";
 
 function parseLocalDate(value: string) {

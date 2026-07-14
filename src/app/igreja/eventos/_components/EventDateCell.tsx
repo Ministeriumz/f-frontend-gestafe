@@ -1,8 +1,14 @@
 "use client";
+//* Libraries imports
 
+//* Libraries imports
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
-import type { DateHeaderProps } from "react-big-calendar";
+
+//* Utilities imports
 import { formatLocalDate } from "./calendar-config";
+
+//* Types imports
+import type { DateHeaderProps } from "react-big-calendar";
 import type { CalendarEvent } from "./event-types";
 
 type EventDateCellProps = DateHeaderProps & {
@@ -26,7 +32,7 @@ export default function EventDateCell({ date, label, isOffRange, onDrillDown, ev
         {label}
       </button>
       {!isOffRange && (
-        <button type="button" className="event-cell-create text-neutral-500 text-xs cursor-pointer" onClick={handleCreate} aria-label={`Criar evento em ${date.toLocaleDateString("pt-BR")}`}>
+        <button type="button" className="event-cell-create text-muted text-xs cursor-pointer" onClick={handleCreate} aria-label={`Criar evento em ${date.toLocaleDateString("pt-BR")}`}>
           <AddRoundedIcon />
           <span>Novo Evento</span>
         </button>

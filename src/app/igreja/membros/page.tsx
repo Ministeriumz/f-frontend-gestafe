@@ -1,10 +1,16 @@
 "use client";
+//* Libraries imports
 
+//* Libraries imports
 import React, { useEffect, useMemo } from "react";
+import { toast } from "sonner";
+
+//* Components imports
 import Table, { Column } from "@/components/table/table";
 import Loading from "@/components/loading/loading";
+
+//* Hooks imports
 import { ResponseCode, useIgrejas, useTiposUsuario, useUsuarios } from "@/hooks";
-import { toast } from "sonner";
 
 type MembroView = {
   id: number;
@@ -102,7 +108,7 @@ export default function MembrosPage() {
   };
 
   if (loading) return <Loading />;
-  if (error) return <div className="flex justify-center items-center p-8 text-red-500">Erro: {error}</div>;
+  if (error) return <div className="flex justify-center items-center p-8 text-danger">Erro: {error}</div>;
 
   return (
     <Table
@@ -110,9 +116,9 @@ export default function MembrosPage() {
       data={rows}
       columnsSearch={["nome", "sobrenome", "email"]}
       actions={[
-        { name: "Editar", func: onEdit, color: "#82ACAA", type: "edit" },
-        { name: "Excluir", func: onDelete, color: "#AC8282", type: "delete" },
-        { name: "Cadastrar", func: onCreate, color: "#82ACAA", type: "create" },
+        { name: "Editar", func: onEdit, type: "edit" },
+        { name: "Excluir", func: onDelete, type: "delete" },
+        { name: "Cadastrar", func: onCreate, type: "create" },
       ]}
       onCreate={onCreate}
       onEdit={onEdit}

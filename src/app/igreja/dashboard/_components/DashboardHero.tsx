@@ -1,6 +1,10 @@
 "use client";
+//* Libraries imports
 
+//* Libraries imports
 import GridViewRoundedIcon from "@mui/icons-material/GridViewRounded";
+
+//* Types imports
 import type { DayPeriod } from "./dashboard-types";
 
 const periodContent: Record<DayPeriod, { greeting: string; image: string }> = {

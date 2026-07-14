@@ -1,6 +1,10 @@
 "use client";
+//* Libraries imports
 
+//* Libraries imports
 import { useCallback, useState } from "react";
+
+//* Utilities imports
 import { apiRequest, ApiResponse, ResponseCode } from "@/lib/api";
 
 type CrudOptions<T> = {

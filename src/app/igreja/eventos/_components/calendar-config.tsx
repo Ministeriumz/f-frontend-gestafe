@@ -1,22 +1,28 @@
+
+//* Libraries imports
+
+//* Libraries imports
 import {
   dateFnsLocalizer,
   type EventProps,
 } from "react-big-calendar";
 import { format, getDay, parse, startOfWeek } from "date-fns";
 import { ptBR } from "date-fns/locale";
+
+//* Types imports
 import type { CalendarEvent } from "./event-types";
 
 const EVENT_COLORS: Record<string, { background: string; foreground: string }> = {
-  culto: { background: "#477f9d", foreground: "#f7fbfd" },
-  "reunião": { background: "#7667a8", foreground: "#fbfaff" },
-  reuniao: { background: "#7667a8", foreground: "#fbfaff" },
-  "célula": { background: "#4f8a70", foreground: "#f5fcf8" },
-  celula: { background: "#4f8a70", foreground: "#f5fcf8" },
-  especial: { background: "#b07838", foreground: "#fffaf2" },
-  treinamento: { background: "#a85f67", foreground: "#fff8f8" },
+  culto: { background: "var(--event-culto-background)", foreground: "var(--event-culto-foreground)" },
+  "reunião": { background: "var(--event-reuniao-background)", foreground: "var(--event-reuniao-foreground)" },
+  reuniao: { background: "var(--event-reuniao-background)", foreground: "var(--event-reuniao-foreground)" },
+  "célula": { background: "var(--event-celula-background)", foreground: "var(--event-celula-foreground)" },
+  celula: { background: "var(--event-celula-background)", foreground: "var(--event-celula-foreground)" },
+  especial: { background: "var(--event-especial-background)", foreground: "var(--event-especial-foreground)" },
+  treinamento: { background: "var(--event-treinamento-background)", foreground: "var(--event-treinamento-foreground)" },
 };
 
-const DEFAULT_EVENT_COLOR = { background: "#5f7775", foreground: "#f7fbfa" };
+const DEFAULT_EVENT_COLOR = { background: "var(--event-default-background)", foreground: "var(--event-default-foreground)" };
 
 export const calendarLocalizer = dateFnsLocalizer({
   format,

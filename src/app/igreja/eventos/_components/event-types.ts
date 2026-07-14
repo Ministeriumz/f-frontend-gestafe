@@ -1,3 +1,7 @@
+
+//* Types imports
+
+//* Types imports
 import type { EventoDTO } from "@/hooks";
 
 export type EventoView = EventoDTO & { id: number };

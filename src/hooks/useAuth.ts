@@ -1,6 +1,10 @@
 "use client";
+//* Libraries imports
 
+//* Libraries imports
 import { useState } from "react";
+
+//* Utilities imports
 import { apiRequest, ApiResponse } from "@/lib/api";
 import { clearSession, isAuthenticated, setSession } from "@/lib/auth";
 

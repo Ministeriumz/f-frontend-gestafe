@@ -1,7 +1,12 @@
 "use client"
+//* Libraries imports
+
+//* Libraries imports
+import React, { useState } from 'react'
+
+//* Components imports
 import Cadastro from '@/components/pages/cadastro'
 import Login from '@/components/pages/login'
-import React, { useState } from 'react'
 
 export default function page() {
   const [page, setPage] = useState<boolean>(false)

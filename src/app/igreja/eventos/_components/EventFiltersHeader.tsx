@@ -1,9 +1,13 @@
 "use client";
+//* Libraries imports
 
+//* Libraries imports
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import CalendarMonthRoundedIcon from "@mui/icons-material/CalendarMonthRounded";
 import FilterAltOffRoundedIcon from "@mui/icons-material/FilterAltOffRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
+
+//* Types imports
 import type { EventFilters } from "./event-types";
 
 type EventFiltersHeaderProps = {
@@ -28,7 +32,7 @@ export default function EventFiltersHeader({ total, filteredTotal, tipos, filter
             <span className="text-[11px] font-bold uppercase tracking-[0.2em]">Agenda da igreja</span>
           </div>
           <h1 className="text-2xl font-semibold text-foreground sm:text-3xl">Calendário de Eventos</h1>
-          <p className="mt-1 text-sm text-textLight">
+          <p className="mt-1 text-sm text-muted">
             {filteredTotal} de {total} evento{total === 1 ? "" : "s"} visível{filteredTotal === 1 ? "" : "is"}
           </p>
         </div>

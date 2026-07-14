@@ -1,16 +1,26 @@
 "use client";
+//* Libraries imports
 
+//* Libraries imports
 import { useEffect, useMemo, useState } from "react";
 import EventRoundedIcon from "@mui/icons-material/EventRounded";
 import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded";
 import PaymentsRoundedIcon from "@mui/icons-material/PaymentsRounded";
 import VolunteerActivismRoundedIcon from "@mui/icons-material/VolunteerActivismRounded";
-import { getSessionUser } from "@/lib/auth";
-import { StatusFinanceiro, useEventos, useFinanceiro, useMinisterios, useUsuarios } from "@/hooks";
+
+//* Components imports
 import DashboardHero, { getDayPeriod } from "./_components/DashboardHero";
 import DashboardMetricCard from "./_components/DashboardMetricCard";
 import QuickAccess from "./_components/QuickAccess";
 import UpcomingEvents from "./_components/UpcomingEvents";
+
+//* Hooks imports
+import { StatusFinanceiro, useEventos, useFinanceiro, useMinisterios, useUsuarios } from "@/hooks";
+
+//* Utilities imports
+import { getSessionUser } from "@/lib/auth";
+
+//* Types imports
 import type { DashboardEvent, DashboardMetric } from "./_components/dashboard-types";
 
 export default function DashboardPage() {

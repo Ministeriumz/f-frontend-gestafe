@@ -1,12 +1,20 @@
 "use client";
+//* Libraries imports
 
+//* Libraries imports
 import Image from "next/image";
 import React, { FormEvent, useState } from "react";
+import { toast } from "sonner";
+
+//* Components imports
 import Input from "@/components/input";
 import Button from "@/components/button";
-import LoadingIndicator from "../loadingIndicator";
+
+//* Hooks imports
 import { ResponseCode, useUsuarios } from "@/hooks";
-import { toast } from "sonner";
+
+//* Utilities imports
+import LoadingIndicator from "../loadingIndicator";
 
 type TiposPage = {
   page: boolean;
@@ -46,7 +54,7 @@ export default function Cadastro({ page, setPage }: TiposPage) {
 
   return (
     <div className="relative gap-3 flex w-full h-screen">
-      <div className="flex flex-1 flex-col items-center justify-start p-6 col-span-1 text-textLight w-full lg:max-w-[40%]">
+      <div className="flex flex-1 flex-col items-center justify-start p-6 col-span-1 text-muted w-full lg:max-w-[40%]">
         <div className="w-full grid grid-cols-3 justify-center items-center">
           <div />
           <div className="flex flex-1 items-center justify-center">
@@ -59,7 +67,7 @@ export default function Cadastro({ page, setPage }: TiposPage) {
             <h1 className="text-3xl xl:text-4xl font-medium text-start w-full mb-4 leading-tight">
               Cadastrar Usuario
             </h1>
-            <h3 className="text-textLight/80 text-lg">
+            <h3 className="text-muted/80 text-lg">
               Ja tem uma conta?{" "}
               <strong className="hover:text-primary cursor-pointer transition-all duration-300" onClick={() => setPage(!page)}>
                 Clique aqui!
@@ -74,14 +82,14 @@ export default function Cadastro({ page, setPage }: TiposPage) {
             <Input placeholder="E-mail" type="email" value={usuarioForm.email} onChange={(e) => setUsuarioForm({ ...usuarioForm, email: e.target.value })} required />
             <Input placeholder="Senha" type="password" value={usuarioForm.senha} onChange={(e) => setUsuarioForm({ ...usuarioForm, senha: e.target.value })} required />
 
-            <div className="text-sm text-neutral-600 bg-neutral-100 p-2 rounded">
+            <div className="text-sm text-muted bg-surface-soft p-2 rounded">
               Seu cadastro sera criado como membro.
             </div>
 
             <Button type="submit">{loading ? <LoadingIndicator /> : "Finalizar Cadastro"}</Button>
             <button
               type="button"
-              className="h-[44px] rounded-lg border border-neutral-300 text-neutral-600 hover:bg-neutral-100 transition"
+              className="h-[44px] rounded-lg border border-border-strong text-muted hover:bg-surface-soft transition"
               onClick={() => setPage(false)}
             >
               Voltar para Login
@@ -92,8 +100,8 @@ export default function Cadastro({ page, setPage }: TiposPage) {
         <p className="text-sm font-light opacity-70">Feito pela Ministerium</p>
       </div>
 
-      <div className="bg-gradient rounded-l-2xl col-span-1 flex-col max-w-[70%] flex-1 items-start justify-center text-textDark p-20 hidden xl:flex ">
-        <div className="flex flex-col text-textDark gap-2 ml-10">
+      <div className="bg-gradient rounded-l-2xl col-span-1 flex-col max-w-[70%] flex-1 items-start justify-center text-subtle p-20 hidden xl:flex ">
+        <div className="flex flex-col text-subtle gap-2 ml-10">
           <h1 className="text-4xl xl:text-6xl font-semibold">A fe move as pessoas</h1>
           <p className="text-lg xl:text-2xl font-extralight">E estamos aqui para ajudar voce a se mover!</p>
         </div>

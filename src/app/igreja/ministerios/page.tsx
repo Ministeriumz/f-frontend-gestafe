@@ -1,10 +1,16 @@
 "use client";
+//* Libraries imports
 
+//* Libraries imports
 import React, { useEffect, useMemo } from "react";
-import Table, { Column } from "@/components/table/table";
-import { useMinisterios, ResponseCode } from "@/hooks";
-import Loading from "@/components/loading/loading";
 import { toast } from "sonner";
+
+//* Components imports
+import Table, { Column } from "@/components/table/table";
+import Loading from "@/components/loading/loading";
+
+//* Hooks imports
+import { useMinisterios, ResponseCode } from "@/hooks";
 
 type MinisterioView = {
   id: number;
@@ -72,7 +78,7 @@ export default function MinisteriosPage() {
   };
 
   if (loading) return <Loading />;
-  if (error) return <div className="flex justify-center items-center p-8 text-red-500">Erro: {error}</div>;
+  if (error) return <div className="flex justify-center items-center p-8 text-danger">Erro: {error}</div>;
 
   return (
     <Table
@@ -80,9 +86,9 @@ export default function MinisteriosPage() {
       data={rows}
       columnsSearch={["nome"]}
       actions={[
-        { name: "Editar", func: onEdit, color: "#82ACAA", type: "edit" },
-        { name: "Excluir", func: onDelete, color: "#AC8282", type: "delete" },
-        { name: "Cadastrar", func: onCreate, color: "#82ACAA", type: "create" },
+        { name: "Editar", func: onEdit, type: "edit" },
+        { name: "Excluir", func: onDelete, type: "delete" },
+        { name: "Cadastrar", func: onCreate, type: "create" },
       ]}
       onCreate={onCreate}
       onEdit={onEdit}

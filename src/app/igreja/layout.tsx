@@ -1,15 +1,21 @@
 "use client"
+//* Libraries imports
 
+//* Libraries imports
 import React, { useEffect, useState, useCallback } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 
+//* Components imports
 import Navbar from '@/components/siderbar/Siderbar'
 import BtnExit from '@/components/layouts/igreja/btnExit'
-
-import { ResponseCode, useIgrejas, useUsuarios } from '@/hooks'
-import { getSessionUser, isAuthenticated } from '@/lib/auth'
 import ChurchModal from '@/app/igreja/_components/modal-cruch'
+
+//* Hooks imports
+import { ResponseCode, useIgrejas, useUsuarios } from '@/hooks'
+
+//* Utilities imports
+import { getSessionUser, isAuthenticated } from '@/lib/auth'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -184,7 +190,7 @@ export default function Layout({ children }: LayoutProps) {
         <div className="min-h-screen w-full overflow-x-hidden">
             <Navbar />
 
-            <main className="w-full md:ml-[250px] md:w-[calc(100%-250px)] pt-[88px] md:pt-4 p-3 md:p-4 text-neutral-600 flex flex-col gap-3 justify-center">
+            <main className="w-full md:ml-[250px] md:w-[calc(100%-250px)] pt-[88px] md:pt-4 p-3 md:p-4 text-muted flex flex-col gap-3 justify-center">
                 <header className="glass-soft rounded-xl p-3 text-xl capitalize font-semibold flex justify-between text-foreground/85">
                     {activeItem !== 'dashboard' && activeItem}
                     <Breadcrumb path={path} />

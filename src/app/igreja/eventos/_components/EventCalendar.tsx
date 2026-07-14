@@ -1,11 +1,19 @@
 "use client";
+//* Libraries imports
 
+//* Libraries imports
 import { useState } from "react";
 import { Calendar, type EventPropGetter, type View, Views } from "react-big-calendar";
+
+//* Components imports
+import EventDateCell from "./EventDateCell";
+
+//* Types imports
+import type { CalendarEvent } from "./event-types";
+
+//* Styles imports
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { CalendarEventContent, calendarLocalizer, calendarMessages, getEventColor } from "./calendar-config";
-import EventDateCell from "./EventDateCell";
-import type { CalendarEvent } from "./event-types";
 
 type EventCalendarProps = {
   events: CalendarEvent[];
@@ -27,7 +35,7 @@ export default function EventCalendar({ events, tipos, filtersActive, onClearFil
   return (
     <div className="p-3 sm:p-5">
       {events.length === 0 && filtersActive && (
-        <div className="mb-3 flex items-center justify-between gap-3 rounded-xl border border-foreground/10 bg-foreground/[0.03] px-4 py-3 text-sm text-textLight">
+        <div className="mb-3 flex items-center justify-between gap-3 rounded-xl border border-border-soft bg-surface-soft px-4 py-3 text-sm text-muted">
           <span>Nenhum evento corresponde aos filtros aplicados.</span>
           <button onClick={onClearFilters} className="font-semibold text-primary hover:underline">Limpar</button>
         </div>
@@ -61,7 +69,7 @@ export default function EventCalendar({ events, tipos, filtersActive, onClearFil
 
       {tipos.length > 0 && (
         <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-foreground/10 pt-4">
-          <span className="mr-1 text-[10px] font-bold uppercase tracking-[0.16em] text-textLight">Tipos</span>
+          <span className="mr-1 text-[10px] font-bold uppercase tracking-[0.16em] text-muted">Tipos</span>
           {tipos.map((item) => {
             const color = getEventColor(item);
             return <span key={item} className="event-legend-item"><i style={{ backgroundColor: color.background }} />{item}</span>;

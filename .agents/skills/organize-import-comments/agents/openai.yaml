@@ -1,0 +1,4 @@
+interface:
+  display_name: "Organizar comentários de imports"
+  short_description: "Padroniza imports por categoria no frontend"
+  default_prompt: "Organize os imports dos arquivos alterados usando os blocos comentados definidos pelo projeto."

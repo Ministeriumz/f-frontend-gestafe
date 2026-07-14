@@ -1,10 +1,16 @@
 'use client'
+//* Libraries imports
+
+//* Libraries imports
 import React, { useState, useMemo, useEffect } from 'react'
+
+//* Utilities imports
 import Input from '../input'
 import Modal from '../modal'
 import Form, { Camp } from '../form/form'
 import Button from '../button'
 import ImprimirTable from './imprimirTable'
+import ConfirmDialog from '../dialog'
 
 export type Column<T> = {
   key: keyof T
@@ -15,7 +21,6 @@ export type Column<T> = {
 export type Action = {
   name: string
   func: (row: any) => void
-  color?: string,
   type?: 'create' | 'edit' | 'delete'
 }
 
@@ -48,6 +53,7 @@ export default function Table<T extends Record<string, unknown>>({
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set())
   const [filters, setFilters] = useState<Record<string, string>>({})
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false)
   const [currentRow, setCurrentRow] = useState<T | null>(null)
   const [currentType, setCurrentType] = useState<'create' | 'edit' | 'delete'>(tipo)
 
@@ -138,6 +144,11 @@ export default function Table<T extends Record<string, unknown>>({
 
   const actionFunc = (action: Action, row: T) => {
     const selectedType = action.type || 'edit'
+    if (selectedType === 'delete') {
+      setCurrentRow(row)
+      setIsConfirmOpen(true)
+      return
+    }
     setCurrentType(selectedType)
     setTipo?.(selectedType);
     setIsModalOpen(true);
@@ -148,12 +159,12 @@ export default function Table<T extends Record<string, unknown>>({
     <div className="flex flex-wrap items-center justify-between gap-3">
       {/* 🎛️ SELETOR DE COLUNAS */}
       <div className="flex flex-col items-center px-3 py-2">
-        <span className="text-sm font-medium text-gray-600 text-start w-full">Colunas:</span>
+        <span className="text-sm font-medium text-muted text-start w-full">Colunas:</span>
         <div className='flex justify-around gap-5 items-center'>
           {columns.map(col => (
             <label
               key={String(col.key)}
-              className="flex items-center gap-1 text-sm text-gray-500 cursor-pointer select-none"
+              className="flex items-center gap-1 text-sm text-muted cursor-pointer select-none"
             >
               <input
                 type="checkbox"
@@ -178,7 +189,7 @@ export default function Table<T extends Record<string, unknown>>({
     <>
       {/* FILTROS + CONTROLE DE COLUNAS */}
       <div className='glass-panel w-full mb-4 rounded-lg p-4 space-y-3'>
-        <p className='text-xl font-semibold text-gray-700 uppercase'>Filtrar</p>
+        <p className='text-xl font-semibold text-strong uppercase'>Filtrar</p>
         <div className='flex flex-wrap gap-2'>
           {columnsSearch.map((colKey) => (
             <Input
@@ -198,7 +209,7 @@ export default function Table<T extends Record<string, unknown>>({
         {Object.values(filters).some(f => f) && (
           <button
             onClick={() => setFilters({})}
-            className='text-sm text-blue-600 hover:underline'
+            className='text-sm text-info hover:underline'
           >
             Limpar filtros
           </button>
@@ -210,7 +221,7 @@ export default function Table<T extends Record<string, unknown>>({
         <div className="overflow-x-auto">
 
           <table className="w-full border-collapse">
-            <thead className="bg-white/40 text-gray-700">
+            <thead className="bg-surface-soft text-strong">
               <tr>
                 <th className="px-4 py-3 text-left text-sm font-medium uppercase"></th>
                 {visibleCols.map((col) => (
@@ -224,23 +235,23 @@ export default function Table<T extends Record<string, unknown>>({
             <tbody>
               {filteredData.length === 0 ? (
                 <tr>
-                  <td colSpan={visibleCols.length + 2} className="px-4 py-8 text-center text-gray-400">
+                  <td colSpan={visibleCols.length + 2} className="px-4 py-8 text-center text-subtle">
                     Nenhum dado encontrado
                   </td>
                 </tr>
               ) : (
                 filteredData.map((row, rowIndex) => (
-                  <tr key={rowIndex} className="border-b border-white/35 hover:bg-white/30 transition">
+                  <tr key={rowIndex} className="border-b border-border-soft hover:bg-surface-soft transition">
                     <td className='px-4 py-3'>
                       <input
                         type='checkbox'
                         onChange={(check) => addRow(rowIndex, check.target.checked)}
-                        className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-400"
+                        className="w-4 h-4 text-info border-border-strong rounded focus:ring-info"
                       />
                     </td>
 
                     {visibleCols.map((col) => (
-                      <td key={String(col.key)} className="px-4 py-3 text-gray-700 text-sm">
+                      <td key={String(col.key)} className="px-4 py-3 text-strong text-sm">
                         {col.render ? col.render(row[col.key], row) : String(row[col.key] ?? '-')}
                       </td>
                     ))}
@@ -251,10 +262,11 @@ export default function Table<T extends Record<string, unknown>>({
                         return (
                           <button
                             key={actionIndex}
-                            className="px-2 py-1 text-sm font-medium rounded border hover:text-white transition backdrop-blur-sm"
-                            style={{ backgroundColor: 'transparent', borderColor: action.color || '#ccc' }}
-                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = action.color || '#ccc'}
-                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                            className={`px-2 py-1 text-sm font-medium rounded border transition backdrop-blur-sm hover:text-on-primary ${
+                              action.type === 'delete'
+                                ? 'border-action-delete text-action-delete hover:bg-action-delete'
+                                : 'border-action-edit text-action-edit hover:bg-action-edit'
+                            }`}
                             onClick={() => actionFunc(action, row)}
                           >
                             {action.name}
@@ -270,7 +282,7 @@ export default function Table<T extends Record<string, unknown>>({
         </div>
 
         <div className='flex justify-between'>
-          <div className="px-4 py-3 text-sm text-gray-500">
+          <div className="px-4 py-3 text-sm text-muted">
             {filteredData.length} de {data.length} {data.length === 1 ? 'registro' : 'registros'}
           </div>
           <ColumnSelector />
@@ -281,7 +293,7 @@ export default function Table<T extends Record<string, unknown>>({
       </div>
 
       {selectedRows.size > 0 && (
-        <div className='flex w-full mt-4 bg-blue-50 rounded-md text-blue-700 px-4 py-2'>
+        <div className='flex w-full mt-4 bg-info-soft rounded-md text-info px-4 py-2'>
           Linhas selecionadas: {selectedRows.size}
         </div>
       )}
@@ -298,6 +310,17 @@ export default function Table<T extends Record<string, unknown>>({
           onDelete={(data) => onDelete && onDelete(data)}
         />
       </Modal>
+
+      <ConfirmDialog
+        isOpen={isConfirmOpen}
+        title="Excluir este registro?"
+        description="Esta ação é permanente e o registro não poderá ser recuperado depois da exclusão."
+        confirmLabel="Excluir registro"
+        onCancel={() => setIsConfirmOpen(false)}
+        onConfirm={async () => {
+          if (currentRow && onDelete) await onDelete(currentRow)
+        }}
+      />
     </>
   )
 }

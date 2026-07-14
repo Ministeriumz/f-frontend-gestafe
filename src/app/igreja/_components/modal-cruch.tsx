@@ -1,4 +1,10 @@
+
+//* Libraries imports
+
+//* Libraries imports
 import React from 'react'
+
+//* Components imports
 import Modal from '@/components/modal'
 import Input from '@/components/input'
 import Button from '@/components/button'
@@ -32,11 +38,11 @@ export default function ChurchModal({
         <Modal isOpen={isOpen} onClose={() => undefined}>
             <form onSubmit={onSubmit} className="flex flex-col gap-4">
                 <div>
-                    <h2 className="text-xl font-semibold text-neutral-800">
+                    <h2 className="text-xl font-semibold text-strong">
                         Cadastre sua igreja
                     </h2>
 
-                    <p className="text-sm text-neutral-500">
+                    <p className="text-sm text-muted">
                         Como este é seu primeiro acesso, finalize o cadastro da
                         igreja para continuar.
                     </p>

@@ -1,10 +1,16 @@
 "use client";
+//* Libraries imports
 
+//* Libraries imports
 import React, { useEffect, useMemo } from "react";
+import { toast } from "sonner";
+
+//* Components imports
 import Table, { Column } from "@/components/table/table";
 import Loading from "@/components/loading/loading";
+
+//* Hooks imports
 import { ResponseCode, useIgrejas } from "@/hooks";
-import { toast } from "sonner";
 
 type IgrejaView = {
   id: number;
@@ -92,7 +98,7 @@ export default function IgrejasPage() {
   };
 
   if (loading) return <Loading />;
-  if (error) return <div className="p-4 text-red-500">{error}</div>;
+  if (error) return <div className="p-4 text-danger">{error}</div>;
 
   return (
     <Table
@@ -100,9 +106,9 @@ export default function IgrejasPage() {
       data={rows}
       columnsSearch={["nome", "cnpj", "estado"]}
       actions={[
-        { name: "Editar", func: onEdit, color: "#82ACAA", type: "edit" },
-        { name: "Excluir", func: onDelete, color: "#AC8282", type: "delete" },
-        { name: "Cadastrar", func: onCreate, color: "#82ACAA", type: "create" },
+        { name: "Editar", func: onEdit, type: "edit" },
+        { name: "Excluir", func: onDelete, type: "delete" },
+        { name: "Cadastrar", func: onCreate, type: "create" },
       ]}
       onCreate={onCreate}
       onEdit={onEdit}

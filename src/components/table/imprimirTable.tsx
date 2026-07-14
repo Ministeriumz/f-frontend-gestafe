@@ -1,6 +1,10 @@
 "use client";
+//* Libraries imports
 
+//* Libraries imports
 import React, { useMemo, useState } from "react";
+
+//* Utilities imports
 import Modal from "../modal";
 import Button from "../button";
 

@@ -1,5 +1,11 @@
+
+//* Libraries imports
+
+//* Libraries imports
 import Link from "next/link";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
+
+//* Types imports
 import type { DashboardMetric } from "./dashboard-types";
 
 export default function DashboardMetricCard({ metric }: { metric: DashboardMetric }) {

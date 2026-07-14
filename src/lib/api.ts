@@ -1,5 +1,7 @@
 "use client";
+//* Utilities imports
 
+//* Utilities imports
 import { getToken } from "./auth";
 
 export interface ApiResponse<T> {

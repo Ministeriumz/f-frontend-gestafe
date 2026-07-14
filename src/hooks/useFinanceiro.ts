@@ -1,6 +1,10 @@
 "use client";
+//* Libraries imports
 
+//* Libraries imports
 import { useCallback } from "react";
+
+//* Utilities imports
 import { useCrud } from "./useCrud";
 
 export enum StatusFinanceiro {

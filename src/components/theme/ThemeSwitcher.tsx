@@ -1,7 +1,11 @@
 "use client";
+//* Libraries imports
 
+//* Libraries imports
 import DarkModeRoundedIcon from "@mui/icons-material/DarkModeRounded";
 import LightModeRoundedIcon from "@mui/icons-material/LightModeRounded";
+
+//* Components imports
 import { useThemeMode } from "@/components/theme/ThemeProvider";
 
 export default function ThemeSwitcher({ className = "" }: { className?: string }) {
@@ -28,7 +32,7 @@ export default function ThemeSwitcher({ className = "" }: { className?: string }
         </small>
       </span>
       <span className={`relative h-5 w-9 shrink-0 rounded-full border border-foreground/10 transition-colors duration-300 ${isDark ? "bg-primary" : "bg-foreground/10"}`} aria-hidden="true">
-        <span className={`absolute top-0.5 size-3.5 rounded-full bg-white shadow-sm transition-transform duration-300 ${isDark ? "translate-x-[17px]" : "translate-x-0.5"}`} />
+        <span className={`absolute top-0.5 size-3.5 rounded-full bg-surface-solid shadow-sm transition-transform duration-300 ${isDark ? "translate-x-[17px]" : "translate-x-0.5"}`} />
       </span>
     </button>
   );

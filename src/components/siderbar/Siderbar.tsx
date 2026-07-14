@@ -1,12 +1,11 @@
 "use client";
+//* Libraries imports
 
+//* Libraries imports
 import Image from "next/image";
 import React from "react";
-import Button from "../button";
 import Dashboard from "@mui/icons-material/Dashboard";
-import { Item } from "./Item";
 import { useRouter } from "next/navigation";
-
 import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
 import AccountTreeIcon from "@mui/icons-material/AccountTree";
 import EventIcon from "@mui/icons-material/Event";
@@ -19,7 +18,13 @@ import ChurchIcon from "@mui/icons-material/Church";
 import SettingsIcon from "@mui/icons-material/Settings";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
+
+//* Components imports
+import { Item } from "./Item";
 import ThemeSwitcher from "@/components/theme/ThemeSwitcher";
+
+//* Utilities imports
+import Button from "../button";
 
 const items = [
   { link: "/igreja/membros", nome: "Membros", icone: <PeopleAltIcon fontSize="small" /> },
