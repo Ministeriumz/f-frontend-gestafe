@@ -5,8 +5,8 @@
 import React, { useState, useEffect } from 'react'
 
 //* Utilities imports
-import Button from '../button'
-import Input from '../input'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 
 export type Camp = {
     key: string;

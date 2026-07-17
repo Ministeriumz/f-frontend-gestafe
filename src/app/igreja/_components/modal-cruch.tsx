@@ -6,8 +6,8 @@ import React from 'react'
 
 //* Components imports
 import Modal from '@/components/modal'
-import Input from '@/components/input'
-import Button from '@/components/button'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
 import LoadingIndicator from '@/components/loadingIndicator'
 
 export type IgrejaForm = {
@@ -99,4 +99,3 @@ export default function ChurchModal({
         </Modal>
     )
 }
- 

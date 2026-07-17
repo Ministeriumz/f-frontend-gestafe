@@ -9,7 +9,7 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import ConfirmDialog from '@/components/dialog';
 
 //* Utilities imports
-import Button from '../../button';
+import { Button } from '@/components/ui/button';
 import { clearSession } from '@/lib/auth';
 
 export default function BtnExit() {
@@ -22,8 +22,8 @@ export default function BtnExit() {
 
     return (
         <>
-        <Button className=' bottom-4 right-4 md:top-4 md:bottom-auto !w-[90px] !h-[42px] text-sm z-50' onClick={() => setConfirmOpen(true)} icon={<ExitToAppIcon fontSize="small" />} >
-            Sair
+        <Button className='bottom-4 right-4 md:top-4 md:bottom-auto w-[90px] z-50' onClick={() => setConfirmOpen(true)}>
+            Sair <ExitToAppIcon fontSize="small" />
         </Button>
         <ConfirmDialog
             isOpen={confirmOpen}

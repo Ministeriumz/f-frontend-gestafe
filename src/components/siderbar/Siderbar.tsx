@@ -24,7 +24,7 @@ import { Item } from "./Item";
 import ThemeSwitcher from "@/components/theme/ThemeSwitcher";
 
 //* Utilities imports
-import Button from "../button";
+import { Button } from "@/components/ui/button";
 
 const items = [
   { link: "/igreja/membros", nome: "Membros", icone: <PeopleAltIcon fontSize="small" /> },
@@ -50,8 +50,8 @@ export default function Navbar() {
           <Image src="/gestafebranco.png" width={80} height={80} alt="logo" className="opacity-40 invert" />
         </div>
 
-        <Button className="!h-[42px] text-sm" onClick={() => router.push("/igreja/dashboard")} icon={<Dashboard fontSize="small" />}>
-          Dashboard
+        <Button onClick={() => router.push("/igreja/dashboard")}>
+          Dashboard <Dashboard fontSize="small" />
         </Button>
 
         <div className="flex-1 overflow-y-auto pr-1">

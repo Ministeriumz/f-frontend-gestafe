@@ -7,8 +7,8 @@ import React, { FormEvent, useState } from "react";
 import { toast } from "sonner";
 
 //* Components imports
-import Input from "@/components/input";
-import Button from "@/components/button";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 //* Hooks imports
 import { ResponseCode, useUsuarios } from "@/hooks";
@@ -78,7 +78,7 @@ export default function Cadastro({ page, setPage }: TiposPage) {
           <form className="gap-2 flex flex-col w-full" onSubmit={cadastrarUsuario}>
             <Input placeholder="Nome" value={usuarioForm.nome} onChange={(e) => setUsuarioForm({ ...usuarioForm, nome: e.target.value })} required />
             <Input placeholder="Sobrenome" value={usuarioForm.sobrenome} onChange={(e) => setUsuarioForm({ ...usuarioForm, sobrenome: e.target.value })} required />
-            <Input placeholder="Telefone" value={usuarioForm.telefone} onChange={(e) => setUsuarioForm({ ...usuarioForm, telefone: e.target.value })} required />
+            <Input placeholder="Telefone" type="telefone" value={usuarioForm.telefone} onValueChange={(telefone) => setUsuarioForm({ ...usuarioForm, telefone })} required />
             <Input placeholder="E-mail" type="email" value={usuarioForm.email} onChange={(e) => setUsuarioForm({ ...usuarioForm, email: e.target.value })} required />
             <Input placeholder="Senha" type="password" value={usuarioForm.senha} onChange={(e) => setUsuarioForm({ ...usuarioForm, senha: e.target.value })} required />
 
@@ -86,7 +86,7 @@ export default function Cadastro({ page, setPage }: TiposPage) {
               Seu cadastro sera criado como membro.
             </div>
 
-            <Button type="submit">{loading ? <LoadingIndicator /> : "Finalizar Cadastro"}</Button>
+            <Button type="submit" size="lg">{loading ? <LoadingIndicator /> : "Finalizar Cadastro"}</Button>
             <button
               type="button"
               className="h-[44px] rounded-lg border border-border-strong text-muted hover:bg-surface-soft transition"

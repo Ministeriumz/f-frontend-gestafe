@@ -8,8 +8,8 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 //* Components imports
-import Input from "@/components/input";
-import Button from "@/components/button";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 //* Hooks imports
 import { useAuth, ResponseCode } from "@/hooks";
@@ -34,7 +34,7 @@ export default function Login({ page, setPage }: TiposPage) {
 
     if (result.code === ResponseCode.SUCCESS && result.data?.token) {
       toast.success("Login realizado com sucesso");
-      router.push("/igreja/dashboard");
+      router.push("/selecionar-perfil");
       return;
     }
 
@@ -87,7 +87,7 @@ export default function Login({ page, setPage }: TiposPage) {
               onChange={(event) => setSenha(event.target.value)}
               required
             />
-            <Button type="submit">{loading ? <LoadingIndicator /> : "Acessar"}</Button>
+            <Button type="submit" size="lg">{loading ? <LoadingIndicator /> : "Acessar"}</Button>
             <button
               type="button"
               className="h-[44px] rounded-lg bg-foreground/8 text-foreground/75 hover:bg-foreground/12 transition"

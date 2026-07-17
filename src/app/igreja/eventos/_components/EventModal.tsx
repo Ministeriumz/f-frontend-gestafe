@@ -7,7 +7,7 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 
 //* Components imports
-import Input from "@/components/input";
+import { Input } from "@/components/ui/input";
 import Modal from "@/components/modal";
 import ConfirmDialog from "@/components/dialog";
 

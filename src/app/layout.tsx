@@ -80,10 +80,13 @@ const themeBootScript = `
 
     if (mode === 'light' || mode === 'dark') {
       root.setAttribute('data-theme', mode);
+      root.classList.toggle('dark', mode === 'dark');
       return;
     }
 
-    root.removeAttribute('data-theme');
+    const resolved = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    root.setAttribute('data-theme', resolved);
+    root.classList.toggle('dark', resolved === 'dark');
   } catch {}
 })();
 `;

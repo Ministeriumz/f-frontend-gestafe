@@ -31,6 +31,7 @@ function applyTheme(mode: ThemeMode): ResolvedTheme {
   const resolved = mode === "system" ? systemTheme : mode;
 
   root.setAttribute("data-theme", resolved);
+  root.classList.toggle("dark", resolved === "dark");
 
   return resolved;
 }
