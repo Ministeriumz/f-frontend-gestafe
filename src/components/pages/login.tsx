@@ -88,13 +88,7 @@ export default function Login({ page, setPage }: TiposPage) {
               required
             />
             <Button type="submit" size="lg">{loading ? <LoadingIndicator /> : "Acessar"}</Button>
-            <button
-              type="button"
-              className="h-[44px] rounded-lg bg-foreground/8 text-foreground/75 hover:bg-foreground/12 transition"
-              onClick={() => setPage(true)}
-            >
-              Ir para Cadastro
-            </button>
+            <Button type="" size="lg" onClick={() => setPage(true)}>{loading ? <LoadingIndicator /> : "Ir para Cadastro"}</Button>
           </form>
         </div>
         <p className="text-sm font-light opacity-70">Feito pela Ministerium</p>

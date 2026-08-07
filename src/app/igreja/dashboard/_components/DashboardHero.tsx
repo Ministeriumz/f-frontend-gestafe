@@ -37,7 +37,7 @@ export default function DashboardHero({ period, userName, date }: DashboardHeroP
 
   return (
     <section
-      className={`dashboard-hero dashboard-hero-${period}`}
+      className={`dashboard-hero relative dashboard-hero-${period}`}
       style={{ backgroundImage: `url(${content.image})` }}
     >
       <div className="dashboard-hero-content">
@@ -51,6 +51,7 @@ export default function DashboardHero({ period, userName, date }: DashboardHeroP
           Acompanhe os principais indicadores e acesse rapidamente as áreas da sua gestão.
         </p>
       </div>
+      {/* <div className="bg-background w-full h-[100px] absolute -bottom-10"/> */}
     </section>
   );
 }
