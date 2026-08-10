@@ -1,13 +1,10 @@
 "use client";
-//* Libraries imports
 
-//* Libraries imports
 import { FormEvent } from "react";
 import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded";
 import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import SendRoundedIcon from "@mui/icons-material/SendRounded";
 
-//* Types imports
 import type { MessageMode, SelectOption } from "./message-types";
 
 const MAX_LENGTH = 500;
@@ -20,13 +17,14 @@ type MessageComposerProps = {
   audienceLabel: string;
   userOptions: SelectOption[];
   typeOptions: SelectOption[];
+  loading: boolean;
   onModeChange: (mode: MessageMode) => void;
   onSelectedIdChange: (id: string) => void;
   onTextChange: (text: string) => void;
   onSubmit: () => void;
 };
 
-export default function MessageComposer({ mode, selectedId, text, recipientCount, audienceLabel, userOptions, typeOptions, onModeChange, onSelectedIdChange, onTextChange, onSubmit }: MessageComposerProps) {
+export default function MessageComposer({ mode, selectedId, text, recipientCount, audienceLabel, userOptions, typeOptions, loading, onModeChange, onSelectedIdChange, onTextChange, onSubmit }: MessageComposerProps) {
   const options = mode === "usuario" ? userOptions : typeOptions;
   const handleSubmit = (event: FormEvent) => { event.preventDefault(); onSubmit(); };
 
@@ -60,7 +58,7 @@ export default function MessageComposer({ mode, selectedId, text, recipientCount
 
         <div className="message-send-summary">
           <div><span>Prévia do envio</span><strong>{audienceLabel || "Nenhum público selecionado"}</strong><small>{recipientCount} destinatário{recipientCount === 1 ? "" : "s"}</small></div>
-          <button type="submit"><SendRoundedIcon /> Revisar e adicionar à fila</button>
+          <button type="submit" disabled={loading}>{loading ? "Enviando..." : <><SendRoundedIcon /> Revisar e enviar</>}</button>
         </div>
       </form>
     </section>

@@ -11,15 +11,15 @@ export interface ApiResponse<T> {
 }
 
 export enum ResponseCode {
-  SUCCESS = 1,
-  INVALID = 2,
-  NOT_FOUND = 3,
-  CONFLICT = 4,
-  UNAUTHORIZED = 5,
-  ERROR = 6,
+  SUCCESS = 200,
+  INVALID = 400,
+  NOT_FOUND = 404,
+  CONFLICT = 409,
+  UNAUTHORIZED = 401,
+  ERROR = 500,
 }
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5290";
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5290";
 
 export async function apiRequest<T>(
   path: string,
@@ -40,7 +40,7 @@ export async function apiRequest<T>(
       if (token) headers.set("Authorization", `Bearer ${token}`);
     }
 
-    const response = await fetch(`${BASE_URL}${path}`, {
+    const response = await fetch(`${API_BASE_URL}${path}`, {
       ...init,
       headers,
     });
@@ -55,8 +55,32 @@ export async function apiRequest<T>(
       return { code: ResponseCode.SUCCESS, message: "Operação realizada com sucesso", data: null };
     }
 
-    const result = (await response.json()) as ApiResponse<T>;
-    return result;
+    const result = (await response.json()) as Partial<ApiResponse<T>> & {
+      title?: string;
+      errors?: Record<string, string[]>;
+      status?: string;
+    };
+
+    if (typeof result.code === "number") {
+      return {
+        code: result.code,
+        message: result.message || (response.ok ? "Operação realizada com sucesso" : `Erro HTTP ${response.status}`),
+        data: result.data ?? null,
+      };
+    }
+
+    const validationMessage = result.errors
+      ? Object.values(result.errors).flat().join(" ")
+      : undefined;
+    return {
+      code: response.status === 400 ? ResponseCode.INVALID
+        : response.status === 401 ? ResponseCode.UNAUTHORIZED
+          : response.status === 404 ? ResponseCode.NOT_FOUND
+            : response.status === 409 ? ResponseCode.CONFLICT
+              : response.ok ? ResponseCode.SUCCESS : ResponseCode.ERROR,
+      message: result.message || result.status || validationMessage || result.title || `Erro HTTP ${response.status}`,
+      data: result.data ?? null,
+    };
   } catch (error) {
     const message = error instanceof Error ? error.message : "Erro inesperado";
     return { code: ResponseCode.ERROR, message, data: null };

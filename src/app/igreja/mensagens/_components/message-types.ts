@@ -6,6 +6,8 @@ export type MessageItem = {
   mode: MessageMode;
   audienceLabel: string;
   recipients: string[];
+  sent: number;
+  failed: number;
   createdAt: string;
 };
 

@@ -847,6 +847,7 @@ body {
 .message-send-summary small { margin-top: .08rem; color: var(--text-muted); font-size: .56rem; }
 .message-send-summary button { display: flex; min-height: 40px; flex: 0 0 auto; align-items: center; gap: .35rem; padding: 0 .8rem; border-radius: .6rem; color: var(--text-on-primary); background: var(--primary); font-size: .64rem; font-weight: 800; transition: background 150ms ease, transform 150ms ease; }
 .message-send-summary button:hover { transform: translateY(-1px); background: var(--primary-hover); }
+.message-send-summary button:disabled { cursor: not-allowed; opacity: .55; transform: none; }
 .message-send-summary button svg { font-size: 1rem; }
 .message-history-list { display: flex; max-height: 540px; flex-direction: column; gap: .55rem; margin-top: .8rem; overflow: auto; }
 .message-history-card { display: grid; grid-template-columns: 38px minmax(0, 1fr); gap: .65rem; padding: .7rem; border: 1px solid var(--line-soft); border-radius: .72rem; background: var(--surface-soft); }
@@ -887,6 +888,12 @@ body {
 .logs-demo-badge span { display: flex; flex-direction: column; }
 .logs-demo-badge strong { font-size: .62rem; }
 .logs-demo-badge small { color: var(--warning); font-size: .52rem; }
+.logs-demo-badge.is-connected { border-color: var(--success-border); color: var(--success); background: var(--success-soft); }
+.logs-demo-badge.is-connected small { color: var(--success); }
+.logs-demo-badge.is-connecting, .logs-demo-badge.is-reconnecting { border-color: var(--info-border); color: var(--info); background: var(--info-soft); }
+.logs-demo-badge.is-connecting small, .logs-demo-badge.is-reconnecting small { color: var(--info); }
+.logs-demo-badge.is-disconnected { border-color: var(--danger-border); color: var(--danger); background: var(--danger-soft); }
+.logs-demo-badge.is-disconnected small { color: var(--danger); }
 .log-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem; }
 .log-summary article { display: flex; align-items: center; gap: .75rem; padding: .8rem; border-radius: .8rem; }
 .log-summary article > span { display: grid; width: 38px; height: 38px; flex: 0 0 auto; place-items: center; border-radius: .6rem; color: var(--primary); background: var(--primary-soft); }

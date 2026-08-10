@@ -34,4 +34,6 @@ export type { EscalaDTO } from "./useEscalas";
 
 export { useLogs } from "./useLogs";
 export type { LogDTO } from "./useLogs";
+export { useWhatsAppMessages } from "./useWhatsAppMessages";
+export type { AudienceMessageResult, SendAudienceMessagePayload } from "./useWhatsAppMessages";
 
