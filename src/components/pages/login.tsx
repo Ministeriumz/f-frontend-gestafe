@@ -3,6 +3,7 @@
 
 //* Libraries imports
 import Image from "next/image";
+import Link from "next/link";
 import React, { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -87,6 +88,12 @@ export default function Login({ page, setPage }: TiposPage) {
               onChange={(event) => setSenha(event.target.value)}
               required
             />
+            <Link
+              href="/esqueci-senha"
+              className="self-end py-1 text-sm font-semibold text-primary transition-colors hover:text-primary/75 hover:underline"
+            >
+              Esqueci minha senha
+            </Link>
             <Button type="submit" size="lg">{loading ? <LoadingIndicator /> : "Acessar"}</Button>
             <Button type="button" size="lg" onClick={() => setPage(true)}>{loading ? <LoadingIndicator /> : "Ir para Cadastro"}</Button>
           </form>
