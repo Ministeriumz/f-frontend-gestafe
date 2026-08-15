@@ -1,110 +1,90 @@
 "use client";
-//* Libraries imports
 
-//* Libraries imports
-import { useEffect, useMemo, useState } from "react";
-import EventBusyRoundedIcon from "@mui/icons-material/EventBusyRounded";
+import { useState } from "react";
+import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
+import CheckCircleOutlineRoundedIcon from "@mui/icons-material/CheckCircleOutlineRounded";
+import EventAvailableRoundedIcon from "@mui/icons-material/EventAvailableRounded";
+import GroupAddRoundedIcon from "@mui/icons-material/GroupAddRounded";
+import BadgeRoundedIcon from "@mui/icons-material/BadgeRounded";
+import AssignmentIndRoundedIcon from "@mui/icons-material/AssignmentIndRounded";
+import PersonOffRoundedIcon from "@mui/icons-material/PersonOffRounded";
 import { toast } from "sonner";
+import { ResponseCode, useEscalas } from "@/hooks";
+import type { DiaEscalaAutomatica } from "@/hooks/useEscalas";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
-//* Components imports
-import ConfirmDialog from "@/components/dialog";
-import Loading from "@/components/loading/loading";
-import NewShiftCard from "./_components/NewShiftCard";
-import ScaleHeader from "./_components/ScaleHeader";
-import ShiftCard from "./_components/ShiftCard";
+const WEEK_DAYS = [
+  { value: 0, label: "Dom" }, { value: 1, label: "Seg" }, { value: 2, label: "Ter" },
+  { value: 3, label: "Qua" }, { value: 4, label: "Qui" }, { value: 5, label: "Sex" }, { value: 6, label: "Sáb" },
+];
 
-//* Hooks imports
-import { ResponseCode, useCargos, useEscalas } from "@/hooks";
-
-//* Types imports
-import type { NewShiftInput, RoleOption, ScaleView, ShiftGroup } from "./_components/scale-types";
-
-const EMPTY_SHIFT: NewShiftInput = { horaInicio: "", horaFim: "", cargoId: "" };
-
-function dateToInput(date: Date) {
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
-}
+function isoDate(date: Date) { return date.toISOString().slice(0, 10); }
+function addDays(date: Date, days: number) { const next = new Date(date); next.setDate(next.getDate() + days); return next; }
+function displayDate(date: string) { return new Date(`${date.slice(0, 10)}T12:00:00`).toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long" }); }
 
 export default function EscalasPage() {
-  const { data, loading, error, getAll, create, remove } = useEscalas();
-  const { data: cargos, getAll: getAllCargos } = useCargos();
-  const [selectedDate, setSelectedDate] = useState(() => dateToInput(new Date()));
-  const [newShiftOpen, setNewShiftOpen] = useState(false);
-  const [newShift, setNewShift] = useState<NewShiftInput>(EMPTY_SHIFT);
-  const [saving, setSaving] = useState(false);
-  const [pendingDelete, setPendingDelete] = useState<ScaleView | null>(null);
+  const today = new Date();
+  const { gerarAutomatica, loading } = useEscalas();
+  const [dataInicio, setDataInicio] = useState(isoDate(today));
+  const [dataFim, setDataFim] = useState(isoDate(addDays(today, 30)));
+  const [diasDaSemana, setDiasDaSemana] = useState<number[]>([0]);
+  const [resultado, setResultado] = useState<DiaEscalaAutomatica[]>([]);
+  const [showSetupModal, setShowSetupModal] = useState(false);
 
-  useEffect(() => { void Promise.all([getAll(), getAllCargos()]); }, [getAll, getAllCargos]);
-
-  const roles = useMemo<RoleOption[]>(() => cargos.filter((cargo) => cargo.idCargo).map((cargo) => ({ id: cargo.idCargo as number, nome: cargo.nome })), [cargos]);
-  const dayScales = useMemo<ScaleView[]>(() => data.filter((scale) => scale.data.slice(0, 10) === selectedDate && scale.id).map((scale) => ({ ...scale, id: scale.id as number })), [data, selectedDate]);
-  const shifts = useMemo<ShiftGroup[]>(() => {
-    const groups = new Map<string, ShiftGroup>();
-    dayScales.forEach((scale) => {
-      const key = `${scale.horaInicio}|${scale.horaFim}`;
-      const group = groups.get(key) ?? { key, inicio: scale.horaInicio, fim: scale.horaFim, scales: [] };
-      group.scales.push(scale);
-      groups.set(key, group);
-    });
-    return Array.from(groups.values()).sort((a, b) => a.inicio.localeCompare(b.inicio));
-  }, [dayScales]);
-
-  const moveDate = (days: number) => {
-    const [year, month, day] = selectedDate.split("-").map(Number);
-    const date = new Date(year, month - 1, day);
-    date.setDate(date.getDate() + days);
-    setSelectedDate(dateToInput(date));
+  const toggleDay = (day: number) => setDiasDaSemana((current) => current.includes(day) ? current.filter((item) => item !== day) : [...current, day]);
+  const gerar = async () => {
+    if (dataFim < dataInicio) { toast.error("A data final precisa ser posterior à data inicial."); return; }
+    const response = await gerarAutomatica({ dataInicio, dataFim, diasDaSemana });
+    if (response.code !== ResponseCode.SUCCESS || !response.data) {
+      if (response.message.includes("Nenhum usuário atrelado a cargos foi encontrado")) {
+        setShowSetupModal(true);
+        return;
+      }
+      toast.error(response.message || "Não foi possível gerar a escala.");
+      return;
+    }
+    setResultado(response.data);
+    toast.success("Escala automática gerada com sucesso.");
   };
 
-  const addToShift = async (shift: ShiftGroup, roleId: number) => {
-    setSaving(true);
-    const result = await create({ data: selectedDate, horaInicio: shift.inicio, horaFim: shift.fim, cargoId: roleId });
-    setSaving(false);
-    if (result.code !== ResponseCode.SUCCESS) { toast.error(result.message ?? "Erro ao adicionar escala"); return false; }
-    toast.success("Cargo adicionado ao turno");
-    await getAll();
-    return true;
-  };
+  return <div className="schedule-page auto-scale-page">
+    <section className="schedule-hero glass-panel">
+      <div className="schedule-hero-copy"><div className="schedule-kicker"><AutoAwesomeRoundedIcon fontSize="small" /><span>Planejamento inteligente</span></div><h1>Gerar escala automática</h1><p>Distribua cada cargo entre os voluntários da sua igreja, com equilíbrio e sem duplicar uma pessoa no mesmo dia.</p></div>
+      <div className="auto-scale-status"><EventAvailableRoundedIcon /><div><span>Período selecionado</span><strong>{dataInicio.split("-").reverse().join("/")} — {dataFim.split("-").reverse().join("/")}</strong><small>{diasDaSemana.length ? `${diasDaSemana.length} dia(s) da semana` : "Todos os dias da semana"}</small></div></div>
+    </section>
+    <section className="auto-scale-form glass-panel">
+      <div className="auto-scale-title"><div><span>Configuração</span><h2>Como deseja montar a escala?</h2></div><p>A geração considera os cargos e vínculos de voluntários já cadastrados.</p></div>
+      <div className="auto-scale-fields"><label><span>Data inicial</span><input type="date" value={dataInicio} onChange={(e) => setDataInicio(e.target.value)} /></label><label><span>Data final</span><input type="date" min={dataInicio} value={dataFim} onChange={(e) => setDataFim(e.target.value)} /></label></div>
+      <div className="auto-scale-days"><span>Reuniões em quais dias?</span><div>{WEEK_DAYS.map((day) => <button key={day.value} type="button" className={diasDaSemana.includes(day.value) ? "active" : ""} onClick={() => toggleDay(day.value)}>{day.label}</button>)}</div><small>Sem seleção significa gerar para todos os dias do período.</small></div>
+      <button className="auto-scale-generate" type="button" disabled={loading} onClick={gerar}><AutoAwesomeRoundedIcon />{loading ? "Gerando distribuição..." : "Gerar escala automática"}</button>
+    </section>
+    {resultado.length > 0 && <section className="auto-scale-result"><div className="schedule-section-heading"><div><span>Escala automática gerada</span><h2>Distribuição gerada</h2></div><p>{resultado.length} encontro(s) planejado(s).</p></div><div className="auto-scale-days-grid">{resultado.map((dia) => <DayCard key={dia.data} dia={dia} />)}</div></section>}
+    <SetupRequiredModal open={showSetupModal} onOpenChange={setShowSetupModal} />
+  </div>;
+}
 
-  const createShift = async () => {
-    if (!newShift.horaInicio || !newShift.horaFim || !newShift.cargoId) { toast.error("Preencha todos os campos"); return; }
-    if (newShift.horaFim <= newShift.horaInicio) { toast.error("O horário final deve ser posterior ao inicial"); return; }
-    setSaving(true);
-    const result = await create({ data: selectedDate, horaInicio: `${newShift.horaInicio}:00`, horaFim: `${newShift.horaFim}:00`, cargoId: Number(newShift.cargoId) });
-    setSaving(false);
-    if (result.code !== ResponseCode.SUCCESS) { toast.error(result.message ?? "Erro ao criar turno"); return; }
-    toast.success("Turno criado");
-    setNewShift(EMPTY_SHIFT);
-    setNewShiftOpen(false);
-    await getAll();
-  };
+function SetupRequiredModal({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
+  return <Dialog open={open} onOpenChange={onOpenChange}>
+    <DialogContent className="max-w-lg gap-5 p-0" showCloseButton={false}>
+      <div className="border-b border-border bg-primary/5 px-6 py-5">
+        <div className="mb-3 grid size-10 place-items-center rounded-xl bg-primary text-primary-foreground"><AutoAwesomeRoundedIcon /></div>
+        <DialogHeader><DialogTitle className="text-xl">A escala ainda precisa de uma equipe</DialogTitle><DialogDescription>Não encontramos voluntários vinculados a cargos. Por isso, a geração automática não tem quem distribuir nas responsabilidades.</DialogDescription></DialogHeader>
+      </div>
+      <div className="px-6">
+        <p className="mb-3 text-sm font-medium text-foreground">Para liberar a geração, conclua estes passos:</p>
+        <ol className="space-y-3">
+          <li className="flex gap-3"><span className="grid size-7 shrink-0 place-items-center rounded-full bg-muted text-xs font-bold">1</span><div><p className="flex items-center gap-1 text-sm font-medium"><BadgeRoundedIcon fontSize="small" /> Cadastre cargos</p><p className="text-xs leading-relaxed text-muted-foreground">Defina as responsabilidades da sua igreja, como recepção, mídia, louvor ou som.</p></div></li>
+          <li className="flex gap-3"><span className="grid size-7 shrink-0 place-items-center rounded-full bg-muted text-xs font-bold">2</span><div><p className="flex items-center gap-1 text-sm font-medium"><GroupAddRoundedIcon fontSize="small" /> Cadastre os membros</p><p className="text-xs leading-relaxed text-muted-foreground">Inclua os voluntários que poderão servir nos encontros.</p></div></li>
+          <li className="flex gap-3"><span className="grid size-7 shrink-0 place-items-center rounded-full bg-muted text-xs font-bold">3</span><div><p className="flex items-center gap-1 text-sm font-medium"><AssignmentIndRoundedIcon fontSize="small" /> Vincule cada membro a um cargo</p><p className="text-xs leading-relaxed text-muted-foreground">É esse vínculo que informa ao sistema quais pessoas podem ser escaladas em cada função.</p></div></li>
+        </ol>
+      </div>
+      <DialogFooter className="px-6"><DialogClose render={<Button variant="outline" />}>Agora não</DialogClose><Button render={<Link href="/igreja/membros" />}>Ir para membros</Button></DialogFooter>
+    </DialogContent>
+  </Dialog>;
+}
 
-  const deleteScale = async () => {
-    if (!pendingDelete) return;
-    setSaving(true);
-    const result = await remove(pendingDelete.id);
-    setSaving(false);
-    if (result.code !== ResponseCode.SUCCESS) { toast.error(result.message ?? "Erro ao remover escala"); return; }
-    toast.success("Escala removida");
-    await getAll();
-  };
-
-  if (loading && data.length === 0) return <Loading />;
-  if (error && data.length === 0) return <p className="p-4 text-danger">{error}</p>;
-
-  return (
-    <div className="schedule-page">
-      <ScaleHeader selectedDate={selectedDate} assignments={dayScales.length} shifts={shifts.length} onDateChange={setSelectedDate} onMoveDate={moveDate} onToday={() => setSelectedDate(dateToInput(new Date()))} />
-
-      <div className="schedule-section-heading"><div><span>Planejamento do dia</span><h2>Turnos organizados</h2></div><p>{shifts.length ? "Adicione ou remova responsabilidades em cada horário." : "Comece criando o primeiro turno deste dia."}</p></div>
-
-      {shifts.length ? <div className="schedule-board">{shifts.map((shift) => <ShiftCard key={shift.key} shift={shift} roles={roles} saving={saving} onAdd={addToShift} onRequestDelete={setPendingDelete} />)}</div> : (
-        <div className="schedule-empty-day glass-panel"><EventBusyRoundedIcon /><strong>Nenhuma escala para esta data</strong><p>Crie um turno para começar a organizar os cargos do encontro.</p></div>
-      )}
-
-      <NewShiftCard open={newShiftOpen} value={newShift} roles={roles} saving={saving} onOpen={() => setNewShiftOpen(true)} onClose={() => { setNewShiftOpen(false); setNewShift(EMPTY_SHIFT); }} onChange={(field, value) => setNewShift((current) => ({ ...current, [field]: value }))} onSubmit={createShift} />
-
-      <ConfirmDialog isOpen={Boolean(pendingDelete)} title="Remover esta escala?" description={`A responsabilidade de ${roles.find((role) => role.id === pendingDelete?.cargoId)?.nome ?? "cargo selecionado"} será removida deste turno.`} confirmLabel="Remover escala" loading={saving} onCancel={() => setPendingDelete(null)} onConfirm={deleteScale} />
-    </div>
-  );
+function DayCard({ dia }: { dia: DiaEscalaAutomatica }) {
+  return <article className="auto-scale-day glass-panel"><header><div><span>{displayDate(dia.data)}</span><strong>{dia.alocacoes.length} cargo(s)</strong></div><CheckCircleOutlineRoundedIcon /></header><div>{dia.alocacoes.map((alocacao, index) => <div className="auto-scale-assignment" key={`${alocacao.cargo}-${index}`}><span>{alocacao.cargo.slice(0, 1).toUpperCase()}</span><p><strong>{alocacao.cargo}</strong><small>{alocacao.usuario === "Sem voluntários disponíveis" ? <><PersonOffRoundedIcon fontSize="inherit" /> Sem voluntário disponível</> : alocacao.usuario}</small></p></div>)}</div></article>;
 }

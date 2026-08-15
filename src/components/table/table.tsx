@@ -189,11 +189,16 @@ export default function Table<T extends Record<string, unknown>>({
             <thead className="border-b border-border bg-muted/40 text-muted-foreground">
               <tr>
                 <th className="w-10 px-4 py-2.5" />
-                {visibleCols.map((column) => (
-                  <th key={String(column.key)} className="whitespace-nowrap px-4 py-2.5 text-left text-xs font-medium">
-                    {column.label}
-                  </th>
-                ))}
+                {visibleCols.map((column) => {
+                  if ((column.label).toLocaleLowerCase().includes("id")) {
+                    return;
+                  }
+                  return (
+                    <th key={String(column.key)} className="whitespace-nowrap px-4 py-2.5 text-left text-xs font-medium">
+                      {column.label}
+                    </th>
+                  )
+                })}
                 <th className="px-4 py-2.5 text-right text-xs font-medium">Ações</th>
               </tr>
             </thead>
@@ -213,11 +218,17 @@ export default function Table<T extends Record<string, unknown>>({
                       aria-label={`Selecionar linha ${rowIndex + 1}`}
                     />
                   </td>
-                  {visibleCols.map((column) => (
-                    <td key={String(column.key)} className="whitespace-nowrap px-4 py-3 text-sm text-foreground">
-                      {column.render ? column.render(row[column.key], row) : String(row[column.key] ?? "-")}
-                    </td>
-                  ))}
+                  {visibleCols.map((column) => {
+
+                    if ((column.label).toLocaleLowerCase().includes("id")) {
+                      return;
+                    }
+                    return (
+                      <td key={String(column.key)} className="whitespace-nowrap px-4 py-3 text-sm text-foreground">
+                        {column.render ? column.render(row[column.key], row) : String(row[column.key] ?? "-")}
+                      </td>
+                    )
+                  })}
                   <td className="flex justify-end gap-1 px-4 py-2">
                     {actions?.map((action, actionIndex) => {
                       if (action.type === "create") return null;
@@ -270,9 +281,9 @@ export default function Table<T extends Record<string, unknown>>({
           object={currentRow as T}
           camps={formFields || generatedFields}
           onCancel={() => setIsModalOpen(false)}
-          onConfirm={(formData) => onCreate?.(formData)}
-          onEdit={(formData) => onEdit?.(formData)}
-          onDelete={(formData) => onDelete?.(formData)}
+          onConfirm={(formData) => onCreate?.(formData as T)}
+          onEdit={(formData) => onEdit?.(formData as T)}
+          onDelete={(formData) => onDelete?.(formData as T)}
         />
       </Modal>
 

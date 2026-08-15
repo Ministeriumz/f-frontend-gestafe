@@ -59,7 +59,16 @@ export async function apiRequest<T>(
       title?: string;
       errors?: Record<string, string[]>;
       status?: string;
+      mensagem?: string;
     };
+
+    if (Array.isArray(result)) {
+      return {
+        code: response.ok ? ResponseCode.SUCCESS : ResponseCode.ERROR,
+        message: response.ok ? "Operação realizada com sucesso" : `Erro HTTP ${response.status}`,
+        data: (response.ok ? result : null) as T | null,
+      };
+    }
 
     if (typeof result.code === "number") {
       return {
@@ -78,7 +87,7 @@ export async function apiRequest<T>(
           : response.status === 404 ? ResponseCode.NOT_FOUND
             : response.status === 409 ? ResponseCode.CONFLICT
               : response.ok ? ResponseCode.SUCCESS : ResponseCode.ERROR,
-      message: result.message || result.status || validationMessage || result.title || `Erro HTTP ${response.status}`,
+      message: result.message || result.mensagem || result.status || validationMessage || result.title || `Erro HTTP ${response.status}`,
       data: result.data ?? null,
     };
   } catch (error) {

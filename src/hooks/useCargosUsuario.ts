@@ -2,7 +2,7 @@
 //* Libraries imports
 
 //* Libraries imports
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 //* Utilities imports
 import { apiRequest, ApiResponse } from "@/lib/api";
@@ -17,7 +17,7 @@ export function useCargosUsuario() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const getAll = async (): Promise<ApiResponse<CargoUsuarioDTO[]>> => {
+  const getAll = useCallback(async (): Promise<ApiResponse<CargoUsuarioDTO[]>> => {
     setLoading(true);
     setError(null);
     try {
@@ -27,9 +27,9 @@ export function useCargosUsuario() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const create = async (payload: CargoUsuarioDTO): Promise<ApiResponse<CargoUsuarioDTO>> => {
+  const create = useCallback(async (payload: CargoUsuarioDTO): Promise<ApiResponse<CargoUsuarioDTO>> => {
     setLoading(true);
     setError(null);
     try {
@@ -42,16 +42,16 @@ export function useCargosUsuario() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const remove = async (idUsuario: number, idCargo: number): Promise<ApiResponse<null>> => {
+  const remove = useCallback(async (idUsuario: number, idCargo: number): Promise<ApiResponse<null>> => {
     setLoading(true);
     setError(null);
     try {
       const result = await apiRequest<null>(`/CargoUsuario/${idUsuario}/${idCargo}`, {
         method: "DELETE",
       });
-      if (result.code === 1) {
+      if (result.code === 200) {
         setData((prev) =>
           prev.filter((item) => !(item.idUsuario === idUsuario && item.idCargo === idCargo))
         );
@@ -60,7 +60,7 @@ export function useCargosUsuario() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   return {
     data,
